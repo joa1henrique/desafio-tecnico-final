@@ -4,6 +4,7 @@
 
 # Docs
 backend/docs/
+roteiro.md
 
 # Node dependencies and build output
 node_modules/
