@@ -1,0 +1,106 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum PerfilUsuario {
+  COLABORADOR
+  GESTOR
+  FINANCEIRO
+  ADMIN
+}
+
+enum StatusSolicitacao {
+  RASCUNHO
+  ENVIADO
+  APROVADO
+  REJEITADO
+  PAGO
+  CANCELADO
+}
+
+enum AcaoSolicitacao {
+  CRIADO
+  ATUALIZADO
+  ENVIADO
+  APROVADO
+  REJEITADO
+  PAGO
+  CANCELADO
+}
+
+model Usuario {
+  id          String       @id @default(uuid())
+  nome        String
+  email       String       @unique
+  senha       String
+  perfil      PerfilUsuario
+  criadoEm    DateTime     @default(now())
+  atualizadoEm DateTime    @updatedAt
+
+  solicitacoes Solicitacao[] @relation("Solicitante")
+  historicos   HistoricoSolicitacao[]
+}
+
+model Categoria {
+  id          String       @id @default(uuid())
+  nome        String       @unique
+  ativo       Boolean      @default(true)
+  criadoEm    DateTime     @default(now())
+  atualizadoEm DateTime    @updatedAt
+
+  solicitacoes Solicitacao[]
+}
+
+model Solicitacao {
+  id                    String            @id @default(uuid())
+  solicitanteId         String
+  categoriaId           String
+  descricao             String
+  valor                 Decimal           @db.Decimal(12, 2)
+  dataDespesa           DateTime
+  status                StatusSolicitacao @default(RASCUNHO)
+  justificativaRejeicao String?
+  criadoEm              DateTime          @default(now())
+  atualizadoEm          DateTime          @updatedAt
+
+  solicitante Usuario   @relation("Solicitante", fields: [solicitanteId], references: [id])
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  anexos      Anexo[]
+  historicos  HistoricoSolicitacao[]
+
+  @@index([solicitanteId])
+  @@index([categoriaId])
+  @@index([status])
+}
+
+model Anexo {
+  id            String      @id @default(uuid())
+  solicitacaoId String
+  nomeArquivo   String
+  urlArquivo    String
+  tipoArquivo   String
+  criadoEm      DateTime    @default(now())
+
+  solicitacao Solicitacao @relation(fields: [solicitacaoId], references: [id])
+
+  @@index([solicitacaoId])
+}
+
+model HistoricoSolicitacao {
+  id            String          @id @default(uuid())
+  solicitacaoId String
+  usuarioId     String
+  acao          AcaoSolicitacao
+  observacao    String
+  criadoEm      DateTime        @default(now())
+
+  solicitacao Solicitacao @relation(fields: [solicitacaoId], references: [id])
+  usuario     Usuario     @relation(fields: [usuarioId], references: [id])
+
+  @@index([solicitacaoId])
+  @@index([usuarioId])
+}
