@@ -4,7 +4,7 @@ import { perfilSchema, idSchema, paginationSchema } from "./common";
 export const createUserSchema = z.object({
   body: z.object({
     nome: z.string().min(1),
-    email: z.string().email(),
+    email: z.email(),
     senha: z.string().min(6),
     perfil: perfilSchema,
   }),

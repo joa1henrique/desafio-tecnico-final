@@ -1,11 +1,22 @@
 import { z } from "zod";
-import { PerfilUsuario, StatusSolicitacao } from "@prisma/client";
 
 export const idSchema = z.uuid();
 
-export const statusSchema = z.nativeEnum(StatusSolicitacao);
+export const statusSchema = z.enum([
+  "RASCUNHO",
+  "ENVIADO",
+  "APROVADO",
+  "REJEITADO",
+  "PAGO",
+  "CANCELADO",
+]);
 
-export const perfilSchema = z.nativeEnum(PerfilUsuario);
+export const perfilSchema = z.enum([
+  "COLABORADOR",
+  "GESTOR",
+  "FINANCEIRO",
+  "ADMIN",
+]);
 
 export const paginationSchema = z.object({
   page: z.coerce.number().int().min(1).default(1),
