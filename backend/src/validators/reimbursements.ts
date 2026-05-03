@@ -46,7 +46,7 @@ export const rejectReimbursementSchema = z.object({
 export const createAttachmentSchema = z.object({
   body: z.object({
     nomeArquivo: z.string().min(1),
-    urlArquivo: z.string().url(),
+    urlArquivo: z.url(),
     tipoArquivo: z.enum(["PDF", "JPG", "PNG"]),
   }),
   params: z.object({ id: idSchema }),
