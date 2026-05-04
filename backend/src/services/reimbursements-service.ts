@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma";
 import { ApiError } from "../errors/api-error";
 import { getStatusText } from "../utils/http-status";
 import { canTransitionStatus } from "../utils/status-transitions";
+import { normalizeToUtcDate, serializeDates } from "../utils/date";
 
 export type AuthenticatedUser = {
   id: string;
@@ -13,7 +14,7 @@ type CreateReimbursementInput = {
   categoriaId: string;
   descricao: string;
   valor: string | number;
-  dataDespesa: string;
+  dataDespesa: Date;
 };
 
 type UpdateReimbursementInput = Partial<CreateReimbursementInput>;
@@ -102,7 +103,7 @@ export async function listReimbursements(user: AuthenticatedUser, page: number, 
     prisma.solicitacao.count({ where: filters }),
   ]);
 
-  return { items, page, pageSize, total };
+  return serializeDates({ items, page, pageSize, total });
 }
 
 export async function createReimbursement(user: AuthenticatedUser, input: CreateReimbursementInput) {
@@ -114,7 +115,7 @@ export async function createReimbursement(user: AuthenticatedUser, input: Create
       categoriaId: input.categoriaId,
       descricao: input.descricao,
       valor: new Prisma.Decimal(input.valor),
-      dataDespesa: input.dataDespesa,
+      dataDespesa: normalizeToUtcDate(input.dataDespesa),
       status: StatusSolicitacao.RASCUNHO,
     },
   });
@@ -126,7 +127,7 @@ export async function createReimbursement(user: AuthenticatedUser, input: Create
     "Solicitacao criada"
   );
 
-  return solicitacao;
+  return serializeDates(solicitacao);
 }
 
 export async function getReimbursement(user: AuthenticatedUser, id: string) {
@@ -136,7 +137,7 @@ export async function getReimbursement(user: AuthenticatedUser, id: string) {
     ensureOwner(user.id, solicitacao.solicitanteId);
   }
 
-  return solicitacao;
+  return serializeDates(solicitacao);
 }
 
 export async function updateReimbursement(user: AuthenticatedUser, id: string, input: UpdateReimbursementInput) {
@@ -157,7 +158,9 @@ export async function updateReimbursement(user: AuthenticatedUser, id: string, i
       categoriaId: input.categoriaId ?? solicitacao.categoriaId,
       descricao: input.descricao ?? solicitacao.descricao,
       valor: input.valor ? new Prisma.Decimal(input.valor) : solicitacao.valor,
-      dataDespesa: input.dataDespesa ?? solicitacao.dataDespesa,
+      dataDespesa: input.dataDespesa
+        ? normalizeToUtcDate(input.dataDespesa)
+        : solicitacao.dataDespesa,
     },
   });
 
@@ -168,7 +171,7 @@ export async function updateReimbursement(user: AuthenticatedUser, id: string, i
     "Solicitacao atualizada"
   );
 
-  return updated;
+  return serializeDates(updated);
 }
 
 export async function submitReimbursement(user: AuthenticatedUser, id: string) {
@@ -189,7 +192,7 @@ export async function submitReimbursement(user: AuthenticatedUser, id: string) {
     "Solicitacao enviada para analise"
   );
 
-  return updated;
+  return serializeDates(updated);
 }
 
 export async function approveReimbursement(user: AuthenticatedUser, id: string) {
@@ -208,7 +211,7 @@ export async function approveReimbursement(user: AuthenticatedUser, id: string) 
     "Solicitacao aprovada pelo gestor"
   );
 
-  return updated;
+  return serializeDates(updated);
 }
 
 export async function rejectReimbursement(
@@ -234,7 +237,7 @@ export async function rejectReimbursement(
     "Solicitacao rejeitada pelo gestor"
   );
 
-  return updated;
+  return serializeDates(updated);
 }
 
 export async function payReimbursement(user: AuthenticatedUser, id: string) {
@@ -253,7 +256,7 @@ export async function payReimbursement(user: AuthenticatedUser, id: string) {
     "Pagamento realizado pelo financeiro"
   );
 
-  return updated;
+  return serializeDates(updated);
 }
 
 export async function listHistory(user: AuthenticatedUser, id: string) {
@@ -263,10 +266,12 @@ export async function listHistory(user: AuthenticatedUser, id: string) {
     ensureOwner(user.id, solicitacao.solicitanteId);
   }
 
-  return prisma.historicoSolicitacao.findMany({
+  const historicos = await prisma.historicoSolicitacao.findMany({
     where: { solicitacaoId: solicitacao.id },
     orderBy: { criadoEm: "desc" },
   });
+
+  return serializeDates(historicos);
 }
 
 export async function createAttachment(
@@ -285,7 +290,7 @@ export async function createAttachment(
     throw new ApiError(400, "Tipo de arquivo invalido", getStatusText(400));
   }
 
-  return prisma.anexo.create({
+  const anexo = await prisma.anexo.create({
     data: {
       solicitacaoId: solicitacao.id,
       nomeArquivo: input.nomeArquivo,
@@ -293,6 +298,8 @@ export async function createAttachment(
       tipoArquivo: input.tipoArquivo,
     },
   });
+
+  return serializeDates(anexo);
 }
 
 export async function listAttachments(user: AuthenticatedUser, id: string) {
@@ -302,8 +309,10 @@ export async function listAttachments(user: AuthenticatedUser, id: string) {
     ensureOwner(user.id, solicitacao.solicitanteId);
   }
 
-  return prisma.anexo.findMany({
+  const anexos = await prisma.anexo.findMany({
     where: { solicitacaoId: solicitacao.id },
     orderBy: { criadoEm: "desc" },
   });
+
+  return serializeDates(anexos);
 }

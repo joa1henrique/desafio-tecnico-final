@@ -1,6 +1,7 @@
 import { prisma } from "../lib/prisma";
 import { ApiError } from "../errors/api-error";
 import { getStatusText } from "../utils/http-status";
+import { serializeDates } from "../utils/date";
 
 type CreateCategoryInput = {
   nome: string;
@@ -24,7 +25,7 @@ export async function listCategories(page: number, pageSize: number) {
     prisma.categoria.count(),
   ]);
 
-  return { items, page, pageSize, total };
+  return serializeDates({ items, page, pageSize, total });
 }
 
 export async function createCategory(input: CreateCategoryInput) {
@@ -33,9 +34,11 @@ export async function createCategory(input: CreateCategoryInput) {
     throw new ApiError(400, "Category already exists", getStatusText(400));
   }
 
-  return prisma.categoria.create({
+  const category = await prisma.categoria.create({
     data: { nome: input.nome, ativo: input.ativo ?? true },
   });
+
+  return serializeDates(category);
 }
 
 export async function updateCategory(id: string, input: UpdateCategoryInput) {
@@ -44,8 +47,10 @@ export async function updateCategory(id: string, input: UpdateCategoryInput) {
     throw new ApiError(404, "Category not found", getStatusText(404));
   }
 
-  return prisma.categoria.update({
+  const category = await prisma.categoria.update({
     where: { id },
     data: { nome: input.nome, ativo: input.ativo },
   });
+
+  return serializeDates(category);
 }

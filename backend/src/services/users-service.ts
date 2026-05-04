@@ -1,13 +1,15 @@
 import bcrypt from "bcryptjs";
+import { PerfilUsuario } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { ApiError } from "../errors/api-error";
 import { getStatusText } from "../utils/http-status";
+import { serializeDates } from "../utils/date";
 
 type CreateUserInput = {
   nome: string;
   email: string;
   senha: string;
-  perfil: string;
+  perfil: PerfilUsuario;
 };
 
 function userSelect() {
@@ -29,7 +31,7 @@ export async function createUser(input: CreateUserInput) {
 
   const senhaHash = await bcrypt.hash(input.senha, 10);
 
-  return prisma.usuario.create({
+  const user = await prisma.usuario.create({
     data: {
       nome: input.nome,
       email: input.email,
@@ -38,6 +40,8 @@ export async function createUser(input: CreateUserInput) {
     },
     select: userSelect(),
   });
+
+  return serializeDates(user);
 }
 
 export async function listUsers(page: number, pageSize: number) {
@@ -53,5 +57,5 @@ export async function listUsers(page: number, pageSize: number) {
     prisma.usuario.count(),
   ]);
 
-  return { items, page, pageSize, total };
+  return serializeDates({ items, page, pageSize, total });
 }
