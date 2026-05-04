@@ -13,6 +13,7 @@ import {
   payReimbursement,
   rejectReimbursement,
   submitReimbursement,
+  cancelReimbursement,
   updateReimbursement,
 } from "../controllers/reimbursements-controller";
 import {
@@ -56,6 +57,12 @@ router.post(
   requireRole(PerfilUsuario.COLABORADOR),
   validate(reimbursementIdParamSchema),
   submitReimbursement
+);
+router.post(
+  "/reimbursements/:id/cancel",
+  requireRole(PerfilUsuario.COLABORADOR),
+  validate(reimbursementIdParamSchema),
+  cancelReimbursement
 );
 router.post(
   "/reimbursements/:id/approve",
