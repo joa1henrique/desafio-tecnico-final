@@ -56,6 +56,12 @@ export async function rejectReimbursement(req: Request, res: Response) {
   return res.status(200).json(updated);
 }
 
+export async function cancelReimbursement(req: Request, res: Response) {
+  const user = requireUser(req);
+  const updated = await reimbursementsService.cancelReimbursement(user, String(req.params.id));
+  return res.status(200).json(updated);
+}
+
 export async function payReimbursement(req: Request, res: Response) {
   const user = requireUser(req);
   const updated = await reimbursementsService.payReimbursement(user, String(req.params.id));

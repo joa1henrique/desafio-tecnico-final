@@ -240,6 +240,29 @@ export async function rejectReimbursement(
   return serializeDates(updated);
 }
 
+export async function cancelReimbursement(user: AuthenticatedUser, id: string) {
+  const solicitacao = await getSolicitacaoOrThrow(id);
+
+  // Only owner (colaborador) can cancel their own request
+  ensureOwner(user.id, solicitacao.solicitanteId);
+
+  ensureStatusTransition(solicitacao.status, StatusSolicitacao.CANCELADO);
+
+  const updated = await prisma.solicitacao.update({
+    where: { id: solicitacao.id },
+    data: { status: StatusSolicitacao.CANCELADO },
+  });
+
+  await registerHistory(
+    solicitacao.id,
+    user.id,
+    AcaoSolicitacao.CANCELADO,
+    "Solicitacao cancelada"
+  );
+
+  return serializeDates(updated);
+}
+
 export async function payReimbursement(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
   ensureStatusTransition(solicitacao.status, StatusSolicitacao.PAGO);
