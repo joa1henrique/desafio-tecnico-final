@@ -11,7 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { getApiErrorMessage } from "@/utils/error";
 
@@ -32,7 +32,7 @@ export function LoginPage() {
 
     try {
       await login(form);
-      navigate("/dashboard", { replace: true });
+      navigate({ to: "/dashboard" });
     } catch (caughtError) {
       setError(getApiErrorMessage(caughtError, "Falha ao fazer login"));
     }

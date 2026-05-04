@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 
 export function AppLayout({ children }: { children: ReactNode }) {
@@ -32,26 +32,28 @@ export function AppLayout({ children }: { children: ReactNode }) {
         }}
       >
         <Toolbar sx={{ justifyContent: "space-between", gap: 2 }}>
-          <Stack direction="row" alignItems="center" spacing={1.5} component={RouterLink} to="/dashboard" sx={{ color: "inherit", textDecoration: "none" }}>
-            <Avatar
-              sx={{
-                width: 36,
-                height: 36,
-                bgcolor: theme.palette.secondary.main,
-                color: theme.palette.secondary.contrastText,
-              }}
-            >
-              <DashboardRoundedIcon fontSize="small" />
-            </Avatar>
-            <Box>
-              <Typography variant="subtitle1" fontWeight={800} lineHeight={1}>
-                Desafio Técnico
-              </Typography>
-              <Typography variant="caption" sx={{ opacity: 0.75 }}>
-                Frontend base
-              </Typography>
-            </Box>
-          </Stack>
+          <Link to="/dashboard" style={{ color: "inherit", textDecoration: "none" }}>
+            <Stack direction="row" alignItems="center" spacing={1.5} sx={{ cursor: "pointer" }}>
+              <Avatar
+                sx={{
+                  width: 36,
+                  height: 36,
+                  bgcolor: theme.palette.secondary.main,
+                  color: theme.palette.secondary.contrastText,
+                }}
+              >
+                <DashboardRoundedIcon fontSize="small" />
+              </Avatar>
+              <Box>
+                <Typography variant="subtitle1" fontWeight={800} lineHeight={1}>
+                  Desafio Técnico
+                </Typography>
+                <Typography variant="caption" sx={{ opacity: 0.75 }}>
+                  Frontend base
+                </Typography>
+              </Box>
+            </Stack>
+          </Link>
 
           <Stack direction="row" alignItems="center" spacing={1.5}>
             {user ? (

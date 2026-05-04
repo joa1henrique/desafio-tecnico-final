@@ -1,5 +1,5 @@
 import { Button, Stack, Typography } from "@mui/material";
-import { Link as RouterLink } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 
 export function NotFoundPage() {
   return (
@@ -13,9 +13,11 @@ export function NotFoundPage() {
       <Typography color="text.secondary" sx={{ maxWidth: 540 }}>
         O endereço acessado não existe nesta base do frontend.
       </Typography>
-      <Button component={RouterLink} to="/dashboard" variant="contained">
-        Voltar ao painel
-      </Button>
+      <Link to="/dashboard">
+        <Button variant="contained">
+          Voltar ao painel
+        </Button>
+      </Link>
     </Stack>
   );
 }
