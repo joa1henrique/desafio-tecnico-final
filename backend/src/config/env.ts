@@ -8,6 +8,7 @@ const envSchema = z.object({
   COOKIE_NAME: z.string().min(1).default("auth_token"),
   COOKIE_SECURE: z.coerce.boolean().default(false),
   COOKIE_SAMESITE: z.enum(["lax", "strict", "none"]).default("lax"),
+  FRONTEND_ORIGIN: z.string().min(1).default("http://localhost:3000"),
 });
 
 export const env = envSchema.parse({
@@ -18,4 +19,5 @@ export const env = envSchema.parse({
   COOKIE_NAME: process.env.COOKIE_NAME,
   COOKIE_SECURE: process.env.COOKIE_SECURE,
   COOKIE_SAMESITE: process.env.COOKIE_SAMESITE,
+  FRONTEND_ORIGIN: process.env.FRONTEND_ORIGIN,
 });
