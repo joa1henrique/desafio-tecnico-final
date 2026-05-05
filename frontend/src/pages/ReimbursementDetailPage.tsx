@@ -1,4 +1,4 @@
-import { useParams } from "@tanstack/react-router";
+import { Link, useParams } from "@tanstack/react-router";
 import useSWR from "swr";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
@@ -89,6 +89,14 @@ export function ReimbursementDetailPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
+                {user?.perfil === "COLABORADOR" && reimbursement.status === "RASCUNHO" && (
+                  <div className="flex justify-end">
+                    <Link to="/reimbursements/$id/edit" params={{ id: reimbursement.id }}>
+                      <Button variant="outline">Editar solicitação</Button>
+                    </Link>
+                  </div>
+                )}
+
                 {/* Grid de informações */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>

@@ -3,6 +3,7 @@ import { LoginPage } from '@/pages/LoginPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { ReimbursementsListPage } from '@/pages/ReimbursementsListPage';
 import { ReimbursementDetailPage } from '@/pages/ReimbursementDetailPage';
+import { ReimbursementNewPage, ReimbursementEditPage } from '@/pages/ReimbursementFormPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { App } from '@/App';
 
@@ -32,11 +33,25 @@ const reimbursementsRoute = createRoute({
   component: ReimbursementsListPage,
 });
 
+// Reimbursement creation route
+const reimbursementNewRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reimbursements/new',
+  component: ReimbursementNewPage,
+});
+
 // Reimbursement detail route
 const reimbursementDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reimbursements/$id',
   component: ReimbursementDetailPage,
+});
+
+// Reimbursement edit route
+const reimbursementEditRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reimbursements/$id/edit',
+  component: ReimbursementEditPage,
 });
 
 // 404 route (catch-all)
@@ -47,7 +62,15 @@ const notFoundRoute = createRoute({
 });
 
 // Create route tree
-const routeTree = rootRoute.addChildren([loginRoute, dashboardRoute, reimbursementsRoute, reimbursementDetailRoute, notFoundRoute]);
+const routeTree = rootRoute.addChildren([
+  loginRoute,
+  dashboardRoute,
+  reimbursementsRoute,
+  reimbursementNewRoute,
+  reimbursementDetailRoute,
+  reimbursementEditRoute,
+  notFoundRoute,
+]);
 
 // Create router
 export const router = createRouter({ 
