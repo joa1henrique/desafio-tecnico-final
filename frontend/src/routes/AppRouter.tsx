@@ -5,6 +5,7 @@ import { ReimbursementsListPage } from '@/pages/ReimbursementsListPage';
 import { ReimbursementDetailPage } from '@/pages/ReimbursementDetailPage';
 import { ReimbursementNewPage, ReimbursementEditPage } from '@/pages/ReimbursementFormPage';
 import { PendingReimbursementsPage, ApprovedReimbursementsPage } from '@/pages/ReimbursementWorkflowPage';
+import { CategoriesPage } from '@/pages/CategoriesPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { App } from '@/App';
 
@@ -69,6 +70,13 @@ const reimbursementEditRoute = createRoute({
   component: ReimbursementEditPage,
 });
 
+// Categories management route
+const categoriesRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/categories',
+  component: CategoriesPage,
+});
+
 // 404 route (catch-all)
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -86,6 +94,7 @@ const routeTree = rootRoute.addChildren([
   reimbursementApprovedRoute,
   reimbursementDetailRoute,
   reimbursementEditRoute,
+  categoriesRoute,
   notFoundRoute,
 ]);
 
