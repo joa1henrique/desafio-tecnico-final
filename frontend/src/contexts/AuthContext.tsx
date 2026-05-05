@@ -1,12 +1,14 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
-import { login as loginRequest, logout as logoutRequest } from "@/services/authService";
+import { getPermissions, login as loginRequest, logout as logoutRequest } from "@/services/authService";
 import type { AuthSession, LoginInput, User } from "@/types";
 import { clearAuthSession, loadAuthSession, saveAuthSession } from "@/utils/storage";
+import type { ActionKey } from "@/constants/rolePermissions";
 
 type AuthContextValue = {
   user: User | null;
   token: string | null;
+  permissions: ActionKey[];
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (input: LoginInput) => Promise<User>;
@@ -16,9 +18,37 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const storedSession = loadAuthSession();
-  const [session, setSession] = useState<AuthSession | null>(storedSession);
+  const initialSession = useMemo(() => loadAuthSession(), []);
+  const [session, setSession] = useState<AuthSession | null>(initialSession);
+  const [permissions, setPermissions] = useState<ActionKey[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (!initialSession) {
+      return;
+    }
+
+    let isActive = true;
+
+    async function loadPermissions() {
+      try {
+        const response = await getPermissions();
+        if (isActive) {
+          setPermissions(response.permissions);
+        }
+      } catch {
+        if (isActive) {
+          setPermissions([]);
+        }
+      }
+    }
+
+    void loadPermissions();
+
+    return () => {
+      isActive = false;
+    };
+  }, [initialSession]);
 
   async function login(input: LoginInput) {
     setIsLoading(true);
@@ -27,6 +57,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const nextSession = await loginRequest(input);
       setSession(nextSession);
       saveAuthSession(nextSession);
+      const response = await getPermissions();
+      setPermissions(response.permissions);
       return nextSession.user;
     } finally {
       setIsLoading(false);
@@ -41,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } finally {
       clearAuthSession();
       setSession(null);
+      setPermissions([]);
       setIsLoading(false);
     }
   }
@@ -49,12 +82,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     () => ({
       user: session?.user ?? null,
       token: session?.token ?? null,
+      permissions,
       isAuthenticated: Boolean(session?.token),
       isLoading,
       login,
       logout,
     }),
-    [session, isLoading]
+    [session, permissions, isLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
