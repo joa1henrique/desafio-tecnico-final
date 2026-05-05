@@ -1,123 +1,70 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Stack,
-  Typography,
-} from "@mui/material";
-import AddRoundedIcon from "@mui/icons-material/AddRounded";
-import ReceiptLongRoundedIcon from "@mui/icons-material/ReceiptLongRounded";
-import CategoryRoundedIcon from "@mui/icons-material/CategoryRounded";
-import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import { Link } from "@tanstack/react-router";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
-
-const quickActions = [
-  {
-    title: "Nova solicitação",
-    description: "Abra um rascunho para registrar uma despesa.",
-    icon: AddRoundedIcon,
-    tone: "primary" as const,
-  },
-  {
-    title: "Minhas solicitações",
-    description: "Acompanhe status, histórico e anexos.",
-    icon: ReceiptLongRoundedIcon,
-    tone: "secondary" as const,
-  },
-  {
-    title: "Categorias",
-    description: "Gerencie os agrupamentos usados nas despesas.",
-    icon: CategoryRoundedIcon,
-    tone: "info" as const,
-  },
-  {
-    title: "Usuários",
-    description: "Cadastre perfis e libere acessos administrativos.",
-    icon: PeopleAltRoundedIcon,
-    tone: "success" as const,
-  },
-];
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export function DashboardPage() {
   const { user } = useAuth();
 
+  const quickActions = [
+    {
+      title: "Nova solicitação",
+      description: "Abra um rascunho para registrar uma despesa.",
+      href: "/reimbursements/new",
+    },
+    {
+      title: "Minhas solicitações",
+      description: "Acompanhe status, histórico e anexos.",
+      href: "/reimbursements",
+    },
+    {
+      title: "Categorias",
+      description: "Gerencie as categorias de despesas.",
+      href: "/categories",
+    },
+    {
+      title: "Usuários",
+      description: "Administre usuários do sistema.",
+      href: "/users",
+    },
+  ];
+
   return (
     <AppLayout>
-      <Stack spacing={3.5}>
-        <Card
-          sx={{
-            overflow: "hidden",
-            borderRadius: 4,
-            color: "white",
-            background:
-              "linear-gradient(135deg, rgba(15, 25, 45, 0.96), rgba(33, 108, 175, 0.92))",
-            boxShadow: "0 24px 60px rgba(11, 20, 36, 0.22)",
-          }}
-        >
-          <CardContent sx={{ p: { xs: 3, md: 4 } }}>
-            <Stack spacing={2}>
-              <Chip
-                label={`Perfil: ${user?.perfil ?? "-"}`}
-                sx={{ width: "fit-content", bgcolor: "rgba(255,255,255,0.14)", color: "white" }}
-              />
-              <Box>
-                <Typography variant="h3" fontWeight={900} gutterBottom>
-                  Bem-vindo, {user?.nome ?? "usuário"}
-                </Typography>
-                <Typography variant="body1" sx={{ maxWidth: 760, opacity: 0.86 }}>
-                  Esta base já deixa pronto o fluxo de autenticação, proteção de rotas e acesso à API.
-                  A partir daqui você pode construir cadastro, listagem, aprovação e anexos sem refazer a estrutura.
-                </Typography>
-              </Box>
-            </Stack>
-          </CardContent>
-        </Card>
+      <div className="space-y-8">
+        {/* Welcome Section */}
+        <div className="space-y-2">
+          <h1 className="text-3xl font-bold tracking-tight">
+            Bem-vindo, {user?.nome}
+          </h1>
+          <p className="text-muted-foreground">
+            Você está acessando como <span className="font-semibold text-foreground">{user?.perfil}</span>
+          </p>
+        </div>
 
-        <Stack
-          direction={{ xs: "column", md: "row" }}
-          spacing={2}
-          useFlexGap
-          flexWrap="wrap"
-        >
-          {quickActions.map((action) => {
-            const Icon = action.icon;
-
-            return (
-              <Card key={action.title} sx={{ flex: "1 1 260px", borderRadius: 4 }}>
-                <CardContent sx={{ p: 3 }}>
-                  <Stack spacing={1.5}>
-                    <Box
-                      sx={{
-                        width: 48,
-                        height: 48,
-                        display: "grid",
-                        placeItems: "center",
-                        borderRadius: 3,
-                        bgcolor: `${action.tone}.light`,
-                        color: `${action.tone}.dark`,
-                      }}
-                    >
-                      <Icon />
-                    </Box>
-                    <Typography variant="h6" fontWeight={800}>
-                      {action.title}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {action.description}
-                    </Typography>
-                    <Button variant="text" sx={{ width: "fit-content", fontWeight: 700 }}>
-                      Abrir
+        {/* Quick Actions */}
+        <div>
+          <h2 className="text-xl font-semibold mb-4">Ações rápidas</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {quickActions.map((action) => (
+              <Card key={action.href} className="hover:shadow-md transition-shadow">
+                <CardHeader>
+                  <CardTitle className="text-lg">{action.title}</CardTitle>
+                  <CardDescription>{action.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <Link to={action.href}>
+                    <Button variant="outline" className="w-full">
+                      Acessar
                     </Button>
-                  </Stack>
+                  </Link>
                 </CardContent>
               </Card>
-            );
-          })}
-        </Stack>
-      </Stack>
+            ))}
+          </div>
+        </div>
+      </div>
     </AppLayout>
   );
 }

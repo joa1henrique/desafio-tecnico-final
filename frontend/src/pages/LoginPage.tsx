@@ -1,19 +1,12 @@
 import { useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Divider,
-  Stack,
-  TextField,
-  Typography,
-} from "@mui/material";
-import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
 import { getApiErrorMessage } from "@/utils/error";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 
 const initialForm = {
   email: "",
@@ -39,77 +32,67 @@ export function LoginPage() {
   }
 
   return (
-    <Box
-      sx={{
-        minHeight: "calc(100vh - 72px)",
-        display: "grid",
-        placeItems: "center",
-      }}
-    >
-      <Card
-        sx={{
-          width: "100%",
-          maxWidth: 460,
-          borderRadius: 4,
-          boxShadow: "0 28px 70px rgba(10, 20, 40, 0.25)",
-          border: "1px solid rgba(255,255,255,0.08)",
-          backdropFilter: "blur(10px)",
-          background: "rgba(255,255,255,0.92)",
-        }}
-      >
-        <CardContent sx={{ p: { xs: 3, sm: 4 } }}>
-          <Stack spacing={2.5}>
-            <Box>
-              <Typography variant="overline" color="primary" fontWeight={800}>
-                Acesso ao sistema
-              </Typography>
-              <Typography variant="h4" fontWeight={900} gutterBottom>
-                Entre no painel
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                Use suas credenciais para acessar a área protegida e iniciar o fluxo de despesas.
-              </Typography>
-            </Box>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-slate-50 to-slate-100">
+      <Card className="w-full max-w-md shadow-lg border-0">
+        <CardHeader className="space-y-2">
+          <div>
+            <p className="text-sm font-medium text-primary">Acesso ao sistema</p>
+            <CardTitle className="text-2xl">Entre no painel</CardTitle>
+            <CardDescription>
+              Use suas credenciais para acessar a área protegida e iniciar o fluxo de despesas.
+            </CardDescription>
+          </div>
+        </CardHeader>
 
-            <Divider />
+        <CardContent className="space-y-6">
+          <Separator />
 
-            {error ? <Alert severity="error">{error}</Alert> : null}
+          {error && (
+            <div className="bg-destructive/10 border border-destructive/30 text-destructive text-sm p-3 rounded-md">
+              {error}
+            </div>
+          )}
 
-            <Box component="form" onSubmit={handleSubmit}>
-              <Stack spacing={2}>
-                <TextField
-                  label="E-mail"
-                  type="email"
-                  value={form.email}
-                  onChange={(event) => setForm((current) => ({ ...current, email: event.target.value }))}
-                  fullWidth
-                  required
-                />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">E-mail</Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                value={form.email}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, email: event.target.value }))
+                }
+                required
+              />
+            </div>
 
-                <TextField
-                  label="Senha"
-                  type="password"
-                  value={form.senha}
-                  onChange={(event) => setForm((current) => ({ ...current, senha: event.target.value }))}
-                  fullWidth
-                  required
-                />
+            <div className="space-y-2">
+              <Label htmlFor="senha">Senha</Label>
+              <Input
+                id="senha"
+                type="password"
+                placeholder="••••••••"
+                value={form.senha}
+                onChange={(event) =>
+                  setForm((current) => ({ ...current, senha: event.target.value }))
+                }
+                required
+              />
+            </div>
 
-                <Button
-                  type="submit"
-                  variant="contained"
-                  size="large"
-                  disabled={isLoading}
-                  startIcon={<LockOutlinedIcon />}
-                  sx={{ py: 1.4, fontWeight: 800 }}
-                >
-                  {isLoading ? "Entrando..." : "Entrar"}
-                </Button>
-              </Stack>
-            </Box>
-          </Stack>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full"
+              size="lg"
+            >
+              {isLoading ? "Entrando..." : "Entrar"}
+            </Button>
+          </form>
         </CardContent>
       </Card>
-    </Box>
+    </div>
   );
 }

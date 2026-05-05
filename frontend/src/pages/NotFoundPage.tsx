@@ -1,23 +1,24 @@
-import { Button, Stack, Typography } from "@mui/material";
 import { Link } from "@tanstack/react-router";
+import { Button } from "@/components/ui/button";
 
 export function NotFoundPage() {
   return (
-    <Stack spacing={2} alignItems="flex-start" sx={{ py: 6 }}>
-      <Typography variant="overline" color="primary" fontWeight={800}>
-        404
-      </Typography>
-      <Typography variant="h3" fontWeight={900}>
-        Página não encontrada
-      </Typography>
-      <Typography color="text.secondary" sx={{ maxWidth: 540 }}>
-        O endereço acessado não existe nesta base do frontend.
-      </Typography>
-      <Link to="/dashboard">
-        <Button variant="contained">
-          Voltar ao painel
-        </Button>
-      </Link>
-    </Stack>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center px-4">
+      <div className="max-w-md text-center space-y-6">
+        <div className="space-y-2">
+          <p className="text-sm font-medium text-primary">404</p>
+          <h1 className="text-3xl font-bold tracking-tight">Página não encontrada</h1>
+          <p className="text-muted-foreground">
+            O endereço acessado não existe nesta base do frontend.
+          </p>
+        </div>
+
+        <Link to="/dashboard">
+          <Button>
+            Voltar ao painel
+          </Button>
+        </Link>
+      </div>
+    </div>
   );
 }

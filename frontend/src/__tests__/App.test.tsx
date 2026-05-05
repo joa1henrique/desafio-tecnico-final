@@ -1,4 +1,5 @@
 import { render } from "@testing-library/react";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 jest.mock("@/services/authService", () => ({
   login: jest.fn().mockResolvedValue({
@@ -13,9 +14,14 @@ jest.mock("@/services/authService", () => ({
   logout: jest.fn().mockResolvedValue(undefined),
 }));
 
-describe("App", () => {
+describe("AuthProvider", () => {
   it("renders without crashing", () => {
-    const { container } = render(<div>App rendered</div>);
+    const { container } = render(
+      <AuthProvider>
+        <div data-testid="test-content">Test Content</div>
+      </AuthProvider>
+    );
+
     expect(container).toBeTruthy();
   });
 });

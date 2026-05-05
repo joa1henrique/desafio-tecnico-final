@@ -1,97 +1,67 @@
-import type { ReactNode } from "react";
-import {
-  AppBar,
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Stack,
-  Toolbar,
-  Typography,
-  useTheme,
-} from "@mui/material";
-import DashboardRoundedIcon from "@mui/icons-material/DashboardRounded";
-import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
-import { Link } from "@tanstack/react-router";
+import { ReactNode } from "react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 export function AppLayout({ children }: { children: ReactNode }) {
-  const theme = useTheme();
   const { user, logout, isLoading } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate({ to: "/login" });
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
 
   return (
-    <Box sx={{ minHeight: "100vh" }}>
-      <AppBar
-        position="sticky"
-        elevation={0}
-        sx={{
-          backdropFilter: "blur(14px)",
-          background:
-            "linear-gradient(135deg, rgba(12, 22, 41, 0.92), rgba(20, 92, 150, 0.86))",
-          borderBottom: "1px solid rgba(255,255,255,0.08)",
-        }}
-      >
-        <Toolbar sx={{ justifyContent: "space-between", gap: 2 }}>
-          <Link to="/dashboard" style={{ color: "inherit", textDecoration: "none" }}>
-            <Stack direction="row" alignItems="center" spacing={1.5} sx={{ cursor: "pointer" }}>
-              <Avatar
-                sx={{
-                  width: 36,
-                  height: 36,
-                  bgcolor: theme.palette.secondary.main,
-                  color: theme.palette.secondary.contrastText,
-                }}
-              >
-                <DashboardRoundedIcon fontSize="small" />
-              </Avatar>
-              <Box>
-                <Typography variant="subtitle1" fontWeight={800} lineHeight={1}>
-                  Desafio Técnico
-                </Typography>
-                <Typography variant="caption" sx={{ opacity: 0.75 }}>
-                  Frontend base
-                </Typography>
-              </Box>
-            </Stack>
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="sticky top-0 z-50 border-b border-border bg-card backdrop-blur supports-[backdrop-filter]:bg-card/95">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Logo / Brand */}
+          <Link to="/dashboard" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-white font-bold text-sm">
+              DT
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-sm leading-tight">Desafio Técnico</span>
+              <span className="text-xs text-muted-foreground leading-tight">Frontend</span>
+            </div>
           </Link>
 
-          <Stack direction="row" alignItems="center" spacing={1.5}>
-            {user ? (
-              <Stack direction="row" alignItems="center" spacing={1}>
-                <Box textAlign="right">
-                  <Typography variant="body2" fontWeight={700}>
-                    {user.nome}
-                  </Typography>
-                  <Typography variant="caption" sx={{ opacity: 0.75 }}>
-                    {user.perfil}
-                  </Typography>
-                </Box>
-                <Avatar sx={{ width: 34, height: 34, bgcolor: "rgba(255,255,255,0.18)" }}>
+          {/* Right Section */}
+          <div className="flex items-center gap-4">
+            {user && (
+              <div className="flex items-center gap-3">
+                <div className="text-right">
+                  <p className="text-sm font-medium">{user.nome}</p>
+                  <p className="text-xs text-muted-foreground">{user.perfil}</p>
+                </div>
+                <div className="w-9 h-9 rounded-full bg-secondary/20 flex items-center justify-center font-semibold text-sm">
                   {user.nome.charAt(0).toUpperCase()}
-                </Avatar>
-              </Stack>
-            ) : null}
+                </div>
+              </div>
+            )}
 
             <Button
-              variant="outlined"
-              onClick={() => void logout()}
+              variant="outline"
+              size="sm"
+              onClick={handleLogout}
               disabled={isLoading}
-              startIcon={<LogoutRoundedIcon />}
-              sx={{
-                color: "white",
-                borderColor: "rgba(255,255,255,0.24)",
-                "&:hover": { borderColor: "white" },
-              }}
             >
               Sair
             </Button>
-          </Stack>
-        </Toolbar>
-      </AppBar>
+          </div>
+        </div>
+      </header>
 
-      <Container maxWidth="xl" sx={{ py: { xs: 3, md: 5 } }}>
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
-      </Container>
-    </Box>
+      </main>
+    </div>
   );
 }
