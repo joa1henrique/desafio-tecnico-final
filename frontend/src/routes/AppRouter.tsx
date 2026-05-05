@@ -4,6 +4,7 @@ import { DashboardPage } from '@/pages/DashboardPage';
 import { ReimbursementsListPage } from '@/pages/ReimbursementsListPage';
 import { ReimbursementDetailPage } from '@/pages/ReimbursementDetailPage';
 import { ReimbursementNewPage, ReimbursementEditPage } from '@/pages/ReimbursementFormPage';
+import { PendingReimbursementsPage, ApprovedReimbursementsPage } from '@/pages/ReimbursementWorkflowPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { App } from '@/App';
 
@@ -40,6 +41,20 @@ const reimbursementNewRoute = createRoute({
   component: ReimbursementNewPage,
 });
 
+// Reimbursement pending workflow route
+const reimbursementPendingRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reimbursements/pending',
+  component: PendingReimbursementsPage,
+});
+
+// Reimbursement approved workflow route
+const reimbursementApprovedRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reimbursements/approved',
+  component: ApprovedReimbursementsPage,
+});
+
 // Reimbursement detail route
 const reimbursementDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -67,6 +82,8 @@ const routeTree = rootRoute.addChildren([
   dashboardRoute,
   reimbursementsRoute,
   reimbursementNewRoute,
+  reimbursementPendingRoute,
+  reimbursementApprovedRoute,
   reimbursementDetailRoute,
   reimbursementEditRoute,
   notFoundRoute,
