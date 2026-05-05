@@ -1,22 +1,16 @@
-import { Navigate, Outlet, useLocation } from "react-router-dom";
 import type { UserRole } from "@/types";
-import { useAuth } from "@/hooks/useAuth";
 
-type ProtectedRouteProps = {
-  allowedRoles?: UserRole[];
-};
+// Helper function for TanStack Router beforeLoad hooks
+export function createProtectedRouteLoader(allowedRoles?: UserRole[]) {
+  return async ({ context }: { context: any }) => {
+    const { auth } = context;
+    
+    if (!auth?.isAuthenticated) {
+      throw new Error('Not authenticated');
+    }
 
-export function ProtectedRoute({ allowedRoles }: ProtectedRouteProps) {
-  const { isAuthenticated, user } = useAuth();
-  const location = useLocation();
-
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace state={{ from: location }} />;
-  }
-
-  if (allowedRoles && user && !allowedRoles.includes(user.perfil)) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  return <Outlet />;
+    if (allowedRoles && auth.user && !allowedRoles.includes(auth.user.perfil)) {
+      throw new Error('Insufficient permissions');
+    }
+  };
 }

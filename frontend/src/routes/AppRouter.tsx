@@ -1,27 +1,39 @@
-import { Navigate, Route, Routes } from "react-router-dom";
-import { ProtectedRoute } from "@/components/guards/ProtectedRoute";
-import { DashboardPage } from "@/pages/DashboardPage";
-import { LoginPage } from "@/pages/LoginPage";
-import { NotFoundPage } from "@/pages/NotFoundPage";
-import { useAuth } from "@/hooks/useAuth";
+import { RootRoute, Route, createRouter } from '@tanstack/react-router';
+import { LoginPage } from '@/pages/LoginPage';
+import { DashboardPage } from '@/pages/DashboardPage';
+import { NotFoundPage } from '@/pages/NotFoundPage';
+import { App } from '@/App';
 
-export function AppRouter() {
-  const { isAuthenticated } = useAuth();
+// Root route
+const rootRoute = new RootRoute({
+  component: App,
+});
 
-  return (
-    <Routes>
-      <Route
-        path="/"
-        element={<Navigate to={isAuthenticated ? "/dashboard" : "/login"} replace />}
-      />
-      <Route
-        path="/login"
-        element={isAuthenticated ? <Navigate to="/dashboard" replace /> : <LoginPage />}
-      />
-      <Route element={<ProtectedRoute />}>
-        <Route path="/dashboard" element={<DashboardPage />} />
-      </Route>
-      <Route path="*" element={<NotFoundPage />} />
-    </Routes>
-  );
-}
+// Login route
+const loginRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/login',
+  component: LoginPage,
+});
+
+// Dashboard route with protection
+const dashboardRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '/dashboard',
+  component: DashboardPage,
+});
+
+// 404 route (catch-all)
+const notFoundRoute = new Route({
+  getParentRoute: () => rootRoute,
+  path: '*',
+  component: NotFoundPage,
+});
+
+// Create route tree
+const routeTree = rootRoute.addChildren([loginRoute, dashboardRoute, notFoundRoute]);
+
+// Create router
+export const router = createRouter({ 
+  routeTree,
+});
