@@ -20,12 +20,9 @@ describe('Permissions validation', () => {
     expect(Array.isArray(res.body.permissions)).toBe(true);
     expect(res.body.permissions).toEqual(
       expect.arrayContaining([
-        'create_reimbursement',
-        'view_own_reimbursements',
-        'view_sent_reimbursements',
-        'view_approved_reimbursements',
+        'view_all_reimbursements',
         'manage_users',
-        'manage_categories',
+        'manage_categories'
       ])
     );
   });

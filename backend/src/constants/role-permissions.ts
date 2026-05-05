@@ -5,6 +5,7 @@ export type PermissionKey =
   | "view_own_reimbursements"
   | "view_sent_reimbursements"
   | "view_approved_reimbursements"
+  | "view_all_reimbursements"
   | "manage_users"
   | "manage_categories";
 
@@ -13,10 +14,7 @@ const rolePermissions: Record<PerfilUsuario, PermissionKey[]> = {
   GESTOR: ["view_sent_reimbursements"],
   FINANCEIRO: ["view_approved_reimbursements"],
   ADMIN: [
-    "create_reimbursement",
-    "view_own_reimbursements",
-    "view_sent_reimbursements",
-    "view_approved_reimbursements",
+    "view_all_reimbursements",
     "manage_users",
     "manage_categories",
   ],
