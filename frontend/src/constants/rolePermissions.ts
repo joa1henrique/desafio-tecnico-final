@@ -5,6 +5,7 @@ export type ActionKey =
   | "view_own_reimbursements"
   | "view_sent_reimbursements"
   | "view_approved_reimbursements"
+  | "view_all_reimbursements"
   | "manage_users"
   | "manage_categories";
 
@@ -48,28 +49,10 @@ export const rolePermissions: Record<UserRole, RolePermission[]> = {
   ],
   ADMIN: [
     {
-      title: "Nova solicitação",
-      description: "Abra um rascunho para registrar uma despesa.",
-      href: "/reimbursements/new",
-      action: "create_reimbursement",
-    },
-    {
-      title: "Minhas solicitações",
-      description: "Acompanhe status, histórico e anexos.",
+      title: "Todas as solicitações",
+      description: "Visualize todas as solicitações registradas no sistema.",
       href: "/reimbursements",
-      action: "view_own_reimbursements",
-    },
-    {
-      title: "Solicitações enviadas",
-      description: "Visualize, aprove e rejeite solicitações.",
-      href: "/reimbursements/pending",
-      action: "view_sent_reimbursements",
-    },
-    {
-      title: "Solicitações aprovadas",
-      description: "Visualize e marque solicitações como pagas.",
-      href: "/reimbursements/approved",
-      action: "view_approved_reimbursements",
+      action: "view_all_reimbursements",
     },
     {
       title: "Usuários",
