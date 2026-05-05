@@ -1,30 +1,30 @@
-import { RootRoute, Route, createRouter } from '@tanstack/react-router';
+import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
 import { LoginPage } from '@/pages/LoginPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { App } from '@/App';
 
 // Root route
-const rootRoute = new RootRoute({
+const rootRoute = createRootRoute({
   component: App,
 });
 
 // Login route
-const loginRoute = new Route({
+const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: LoginPage,
 });
 
 // Dashboard route with protection
-const dashboardRoute = new Route({
+const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/dashboard',
   component: DashboardPage,
 });
 
 // 404 route (catch-all)
-const notFoundRoute = new Route({
+const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '*',
   component: NotFoundPage,
