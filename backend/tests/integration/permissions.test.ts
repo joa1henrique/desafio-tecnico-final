@@ -7,6 +7,34 @@ describe('Permissions validation', () => {
     await resetAndSeed();
   });
 
+  test('authenticated user can get own permissions', async () => {
+    const { cookie } = await loginAs('admin@exemplo.com', 'admin123');
+    expect(cookie).toBeDefined();
+
+    const res = await request
+      .get('/auth/permissions')
+      .set('Cookie', cookie || '');
+
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('permissions');
+    expect(Array.isArray(res.body.permissions)).toBe(true);
+    expect(res.body.permissions).toEqual(
+      expect.arrayContaining([
+        'create_reimbursement',
+        'view_own_reimbursements',
+        'view_sent_reimbursements',
+        'view_approved_reimbursements',
+        'manage_users',
+        'manage_categories',
+      ])
+    );
+  });
+
+  test('unauthenticated user cannot get permissions', async () => {
+    const res = await request.get('/auth/permissions');
+    expect(res.status).toBe(401);
+  });
+
   // Users CRUD — only ADMIN
   test('colaborador cannot create user', async () => {
     const { cookie } = await loginAs('colaborador@exemplo.com', 'admin123');

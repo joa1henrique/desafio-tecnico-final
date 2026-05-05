@@ -3,32 +3,14 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { getPermissionsByRole } from "@/constants/rolePermissions";
 
 export function DashboardPage() {
-  const { user } = useAuth();
+  const { user, permissions } = useAuth();
 
-  const quickActions = [
-    {
-      title: "Nova solicitação",
-      description: "Abra um rascunho para registrar uma despesa.",
-      href: "/reimbursements/new",
-    },
-    {
-      title: "Minhas solicitações",
-      description: "Acompanhe status, histórico e anexos.",
-      href: "/reimbursements",
-    },
-    {
-      title: "Categorias",
-      description: "Gerencie as categorias de despesas.",
-      href: "/categories",
-    },
-    {
-      title: "Usuários",
-      description: "Administre usuários do sistema.",
-      href: "/users",
-    },
-  ];
+  const quickActions = user
+    ? getPermissionsByRole(user.perfil).filter((action) => permissions.includes(action.action))
+    : [];
 
   return (
     <AppLayout>
