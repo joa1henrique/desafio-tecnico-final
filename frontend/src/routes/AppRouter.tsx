@@ -1,6 +1,8 @@
 import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
 import { LoginPage } from '@/pages/LoginPage';
 import { DashboardPage } from '@/pages/DashboardPage';
+import { ReimbursementsListPage } from '@/pages/ReimbursementsListPage';
+import { ReimbursementDetailPage } from '@/pages/ReimbursementDetailPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { App } from '@/App';
 
@@ -23,6 +25,20 @@ const dashboardRoute = createRoute({
   component: DashboardPage,
 });
 
+// Reimbursements list route
+const reimbursementsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reimbursements',
+  component: ReimbursementsListPage,
+});
+
+// Reimbursement detail route
+const reimbursementDetailRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reimbursements/$id',
+  component: ReimbursementDetailPage,
+});
+
 // 404 route (catch-all)
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -31,7 +47,7 @@ const notFoundRoute = createRoute({
 });
 
 // Create route tree
-const routeTree = rootRoute.addChildren([loginRoute, dashboardRoute, notFoundRoute]);
+const routeTree = rootRoute.addChildren([loginRoute, dashboardRoute, reimbursementsRoute, reimbursementDetailRoute, notFoundRoute]);
 
 // Create router
 export const router = createRouter({ 
