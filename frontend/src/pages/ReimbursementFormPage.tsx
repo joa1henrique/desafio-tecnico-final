@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "@tanstack/react-router";
 import { useFieldArray, useForm } from "react-hook-form";
 import { z } from "zod";
@@ -122,6 +122,7 @@ function ErrorCard({ title, message }: { title: string; message: string }) {
 function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageProps) {
   const { isAuthenticated, user } = useAuth();
   const navigate = useNavigate();
+  const [isSaving, setIsSaving] = useState(false);
 
   const { data: categories, isLoading: categoriesLoading, error: categoriesError } = useSWR(
     isAuthenticated ? "categories-for-reimbursement-form" : null,
@@ -176,27 +177,36 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
   const existingAttachments = useMemo(() => reimbursement?.anexos ?? [], [reimbursement]);
 
   const saveReimbursement = async (values: ReimbursementFormValues, sendAfterSave: boolean) => {
-    const input = toReimbursementInput(values);
+    setIsSaving(true);
 
-    const saved = isEdit
-      ? await updateReimbursement(reimbursementId!, input)
-      : await createReimbursement(input);
+    try {
+      const input = toReimbursementInput(values);
 
-    if (values.anexos.length > 0) {
-      await persistAttachments(saved.id, values.anexos);
+      const saved = isEdit
+        ? await updateReimbursement(reimbursementId!, input)
+        : await createReimbursement(input);
+
+      if (values.anexos.length > 0) {
+        await persistAttachments(saved.id, values.anexos);
+      }
+
+      const finalReimbursement = sendAfterSave ? await submitReimbursement(saved.id) : saved;
+
+      toast.success(
+        sendAfterSave
+          ? "Solicitação salva e enviada com sucesso"
+          : isEdit
+            ? "Solicitação atualizada com sucesso"
+            : "Solicitação salva como rascunho"
+      );
+
+      await navigate({ to: `/reimbursements/${finalReimbursement.id}` });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Não foi possível salvar a solicitação.";
+      toast.error(message);
+    } finally {
+      setIsSaving(false);
     }
-
-    const finalReimbursement = sendAfterSave ? await submitReimbursement(saved.id) : saved;
-
-    toast.success(
-      sendAfterSave
-        ? "Solicitação salva e enviada com sucesso"
-        : isEdit
-          ? "Solicitação atualizada com sucesso"
-          : "Solicitação salva como rascunho"
-    );
-
-    await navigate({ to: `/reimbursements/${finalReimbursement.id}` });
   };
 
   if (!isAuthenticated) {
@@ -242,6 +252,12 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">{pageTitle}</h1>
           <p className="text-muted-foreground">{pageDescription}</p>
+        </div>
+
+        <div>
+          <Button type="button" variant="ghost" onClick={() => navigate({ to: isEdit ? `/reimbursements/${reimbursementId}` : "/reimbursements" })}>
+            Voltar
+          </Button>
         </div>
 
         {isEdit && reimbursement?.status !== "RASCUNHO" && (
@@ -399,15 +415,17 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
                 <Button
                   type="button"
                   variant="outline"
+                  disabled={isSaving}
                   onClick={handleSubmit((values) => saveReimbursement(values, false))}
                 >
-                  Salvar rascunho
+                  {isSaving ? "Salvando..." : "Salvar rascunho"}
                 </Button>
                 <Button
                   type="button"
+                  disabled={isSaving}
                   onClick={handleSubmit((values) => saveReimbursement(values, true))}
                 >
-                  Salvar e enviar
+                  {isSaving ? "Salvando..." : "Salvar e enviar"}
                 </Button>
               </div>
             </CardContent>
