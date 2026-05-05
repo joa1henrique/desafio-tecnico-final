@@ -1,31 +1,167 @@
-import { useParams } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "@tanstack/react-router";
 import useSWR from "swr";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { getReimbursement, listReimbursementHistory } from "@/services/reimbursementsService";
+import { Label } from "@/components/ui/label";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  approveReimbursement,
+  getReimbursement,
+  listReimbursementHistory,
+  payReimbursement,
+  rejectReimbursement,
+} from "@/services/reimbursementsService";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { HistoryTimeline } from "@/components/ui/history-timeline";
+import { toast } from "react-toastify";
+
+function RejectionDialog({
+  open,
+  onOpenChange,
+  onConfirm,
+  isSubmitting,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onConfirm: (justificativaRejeicao: string) => Promise<void>;
+  isSubmitting: boolean;
+}) {
+  const [justificativaRejeicao, setJustificativaRejeicao] = useState("");
+
+  useEffect(() => {
+    if (!open) {
+      setJustificativaRejeicao("");
+    }
+  }, [open]);
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Rejeitar solicitação</DialogTitle>
+          <DialogDescription>Informe o motivo da rejeição para registrar no histórico.</DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-2">
+          <Label htmlFor="justificativaRejeicao">Justificativa</Label>
+          <Textarea
+            id="justificativaRejeicao"
+            rows={4}
+            value={justificativaRejeicao}
+            onChange={(event) => setJustificativaRejeicao(event.target.value)}
+            placeholder="Explique por que a solicitação foi rejeitada"
+          />
+        </div>
+
+        <DialogFooter>
+          <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={isSubmitting}>
+            Cancelar
+          </Button>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={isSubmitting || justificativaRejeicao.trim().length === 0}
+            onClick={() => onConfirm(justificativaRejeicao)}
+          >
+            {isSubmitting ? "Rejeitando..." : "Rejeitar"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
 
 export function ReimbursementDetailPage() {
   const { id } = useParams({ from: "/reimbursements/$id" });
   const { user, isAuthenticated } = useAuth();
+  const [isActionLoading, setIsActionLoading] = useState(false);
+  const [isRejectDialogOpen, setIsRejectDialogOpen] = useState(false);
+  const [refreshIndex, setRefreshIndex] = useState(0);
 
   const { data: reimbursement, isLoading: isLoadingDetail, error: errorDetail } = useSWR(
-    isAuthenticated && id ? ["reimbursement", id] : null,
+    isAuthenticated && id ? ["reimbursement", id, refreshIndex] : null,
     async () => getReimbursement(id!),
     { revalidateOnFocus: false }
   );
 
   const { data: history, isLoading: isLoadingHistory, error: errorHistory } = useSWR(
-    isAuthenticated && id ? ["reimbursement-history", id] : null,
+    isAuthenticated && id ? ["reimbursement-history", id, refreshIndex] : null,
     async () => listReimbursementHistory(id!),
     { revalidateOnFocus: false }
   );
 
   const isLoading = isLoadingDetail || isLoadingHistory;
   const error = errorDetail || errorHistory;
+
+  async function refreshData() {
+    setRefreshIndex((current) => current + 1);
+  }
+
+  async function handleApprove() {
+    if (!id) {
+      return;
+    }
+
+    setIsActionLoading(true);
+
+    try {
+      await approveReimbursement(id);
+      toast.success("Solicitação aprovada com sucesso");
+      await refreshData();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível aprovar a solicitação.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  }
+
+  async function handleReject(justificativaRejeicao: string) {
+    if (!id) {
+      return;
+    }
+
+    setIsActionLoading(true);
+
+    try {
+      await rejectReimbursement(id, { justificativaRejeicao });
+      toast.success("Solicitação rejeitada com sucesso");
+      setIsRejectDialogOpen(false);
+      await refreshData();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível rejeitar a solicitação.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  }
+
+  async function handlePay() {
+    if (!id) {
+      return;
+    }
+
+    setIsActionLoading(true);
+
+    try {
+      await payReimbursement(id);
+      toast.success("Solicitação marcada como paga");
+      await refreshData();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível marcar como paga.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  }
 
   if (!isAuthenticated) {
     return (
@@ -89,6 +225,33 @@ export function ReimbursementDetailPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
+                {user?.perfil === "COLABORADOR" && reimbursement.status === "RASCUNHO" && (
+                  <div className="flex justify-end">
+                    <Link to="/reimbursements/$id/edit" params={{ id: reimbursement.id }}>
+                      <Button variant="outline">Editar solicitação</Button>
+                    </Link>
+                  </div>
+                )}
+
+                {user?.perfil === "GESTOR" && reimbursement.status === "ENVIADO" && (
+                  <div className="flex flex-wrap justify-end gap-3">
+                    <Button variant="outline" onClick={() => setIsRejectDialogOpen(true)} disabled={isActionLoading}>
+                      Rejeitar
+                    </Button>
+                    <Button onClick={handleApprove} disabled={isActionLoading}>
+                      {isActionLoading ? "Aprovando..." : "Aprovar"}
+                    </Button>
+                  </div>
+                )}
+
+                {user?.perfil === "FINANCEIRO" && reimbursement.status === "APROVADO" && (
+                  <div className="flex justify-end">
+                    <Button onClick={handlePay} disabled={isActionLoading}>
+                      {isActionLoading ? "Processando..." : "Marcar como pago"}
+                    </Button>
+                  </div>
+                )}
+
                 {/* Grid de informações */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
@@ -158,6 +321,13 @@ export function ReimbursementDetailPage() {
                 </CardContent>
               </Card>
             )}
+
+            <RejectionDialog
+              open={isRejectDialogOpen}
+              onOpenChange={setIsRejectDialogOpen}
+              onConfirm={handleReject}
+              isSubmitting={isActionLoading}
+            />
           </>
         )}
       </div>
