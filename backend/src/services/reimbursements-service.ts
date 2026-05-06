@@ -32,7 +32,19 @@ type CreateAttachmentInput = {
 async function getSolicitacaoOrThrow(id: string) {
   const solicitacao = await prisma.solicitacao.findUnique({
     where: { id },
-    include: { anexos: true, historicos: true },
+    include: {
+      anexos: true,
+      historicos: true,
+      solicitante: {
+        select: {
+          id: true,
+          nome: true,
+          email: true,
+          perfil: true,
+        },
+      },
+      categoria: true,
+    },
   });
 
   if (!solicitacao) {
@@ -99,6 +111,17 @@ export async function listReimbursements(user: AuthenticatedUser, page: number, 
       skip,
       take: pageSize,
       orderBy: { criadoEm: "desc" },
+      include: {
+        solicitante: {
+          select: {
+            id: true,
+            nome: true,
+            email: true,
+            perfil: true,
+          },
+        },
+        categoria: true,
+      },
     }),
     prisma.solicitacao.count({ where: filters }),
   ]);
