@@ -16,9 +16,11 @@ import {
   cancelReimbursement,
   updateReimbursement,
 } from "../controllers/reimbursements-controller";
+import { getFinancialReport } from "../controllers/reports-controller";
 import {
   createAttachmentSchema,
   createReimbursementSchema,
+  financialReportSchema,
   listReimbursementsSchema,
   rejectReimbursementSchema,
   reimbursementIdParamSchema,
@@ -29,6 +31,13 @@ import { PerfilUsuario } from "@prisma/client";
 const router = Router();
 
 router.use(authenticate);
+
+router.get(
+  "/reimbursements/reports",
+  requireRole(PerfilUsuario.ADMIN),
+  validate(financialReportSchema),
+  getFinancialReport
+);
 
 router.get(
   "/reimbursements",

@@ -6,6 +6,7 @@ export type ActionKey =
   | "view_sent_reimbursements"
   | "view_approved_reimbursements"
   | "view_all_reimbursements"
+  | "view_financial_reports"
   | "manage_users"
   | "manage_categories";
 
@@ -53,6 +54,12 @@ export const rolePermissions: Record<UserRole, RolePermission[]> = {
       description: "Visualize todas as solicitações registradas no sistema.",
       href: "/reimbursements",
       action: "view_all_reimbursements",
+    },
+    {
+      title: "Relatório Financeiro",
+      description: "Gráficos de valores pagos e a pagar, com filtros.",
+      href: "/reports",
+      action: "view_financial_reports",
     },
     {
       title: "Usuários",
