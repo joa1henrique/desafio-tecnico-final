@@ -28,6 +28,9 @@ async function main() {
   const gestor = await prisma.usuario.create({
     data: { nome: 'Gestor', email: 'gestor@exemplo.com', senha: passwordHash, perfil: PerfilUsuario.GESTOR },
   })
+  const financeiro = await prisma.usuario.create({
+    data: { nome: 'Financeiro', email: 'financeiro@exemplo.com', senha: passwordHash, perfil: PerfilUsuario.FINANCEIRO },
+  })
   const colab1 = await prisma.usuario.create({
     data: { nome: 'Colaborador 1', email: 'colaborador@exemplo.com', senha: passwordHash, perfil: PerfilUsuario.COLABORADOR },
   })
