@@ -36,7 +36,7 @@ export const listReimbursementsSchema = z.object({
     status: statusSchema.optional(),
     categoriaId: idSchema.optional(),
     colaboradorNome: z.string().optional(),
-    sortBy: z.enum(["criadoEm", "valor"]).optional(),
+    sortBy: z.enum(["dataDespesa", "valor"]).optional(),
     sortOrder: z.enum(["asc", "desc"]).optional(),
   }),
 });

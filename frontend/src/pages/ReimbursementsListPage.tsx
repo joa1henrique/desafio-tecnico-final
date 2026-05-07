@@ -28,7 +28,7 @@ export function ReimbursementsListPage() {
   const [categoriaFilter, setCategoriaFilter] = useState("");
   const [colaboradorInput, setColaboradorInput] = useState("");
   const [colaboradorFilter, setColaboradorFilter] = useState("");
-  const [sortBy, setSortBy] = useState("criadoEm");
+  const [sortBy, setSortBy] = useState("dataDespesa");
   const [sortOrder, setSortOrder] = useState("desc");
 
   const handleSearchColaborador = () => {
@@ -159,7 +159,7 @@ export function ReimbursementsListPage() {
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                 >
-                  <option value="criadoEm">Data de Criação</option>
+                  <option value="dataDespesa">Data da Despesa</option>
                   <option value="valor">Valor</option>
                 </select>
               </div>
