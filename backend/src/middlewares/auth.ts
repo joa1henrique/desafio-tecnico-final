@@ -12,8 +12,6 @@ type JwtPayload = {
 
 export function authenticate(req: Request, _res: Response, next: NextFunction) {
   const header = req.headers.authorization;
-  const cookieToken = req.cookies?.[env.COOKIE_NAME] as string | undefined;
-
   let token: string | undefined;
 
   if (header) {
@@ -22,8 +20,6 @@ export function authenticate(req: Request, _res: Response, next: NextFunction) {
       return next(new ApiError(401, "Invalid token", getStatusText(401)));
     }
     token = value;
-  } else if (cookieToken) {
-    token = cookieToken;
   }
 
   if (!token) {
