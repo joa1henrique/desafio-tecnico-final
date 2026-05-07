@@ -11,12 +11,15 @@ export async function getFinancialReport(filters?: ReportFilters) {
   const baseWhere: Prisma.SolicitacaoWhereInput = {};
 
   if (filters?.dataInicio || filters?.dataFim) {
-    baseWhere.criadoEm = {};
+    baseWhere.dataDespesa = {};
     if (filters.dataInicio) {
-      (baseWhere.criadoEm as any).gte = filters.dataInicio;
+      baseWhere.dataDespesa.gte = filters.dataInicio;
     }
     if (filters.dataFim) {
-      (baseWhere.criadoEm as any).lte = filters.dataFim;
+      // Ajusta dataFim para o final do dia
+      const dFim = new Date(filters.dataFim);
+      dFim.setHours(23, 59, 59, 999);
+      baseWhere.dataDespesa.lte = dFim;
     }
   }
 
