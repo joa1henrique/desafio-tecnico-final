@@ -5,7 +5,7 @@ const baseURL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
 export const api = axios.create({
   baseURL,
-  withCredentials: true,
+  // withCredentials: true, // Removido pois usamos Bearer Token no LocalStorage
   headers: {
     "Content-Type": "application/json",
   },
