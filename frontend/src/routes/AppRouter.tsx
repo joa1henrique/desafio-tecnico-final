@@ -1,4 +1,5 @@
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
+import { createRootRoute, createRoute, createRouter, Navigate } from '@tanstack/react-router';
+import { useAuth } from '@/hooks/useAuth';
 import { LoginPage } from '@/pages/LoginPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { ReimbursementsListPage } from '@/pages/ReimbursementsListPage';
@@ -14,6 +15,22 @@ import { App } from '@/App';
 // Root route
 const rootRoute = createRootRoute({
   component: App,
+  notFoundComponent: NotFoundPage,
+});
+
+// Index route with redirect logic
+const indexRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/',
+  component: () => {
+    const { isAuthenticated, isLoading } = useAuth();
+
+    if (isLoading) {
+      return null;
+    }
+
+    return <Navigate to={isAuthenticated ? '/dashboard' : '/login'} replace />;
+  },
 });
 
 // Login route
@@ -96,12 +113,13 @@ const reportsRoute = createRoute({
 // 404 route (catch-all)
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
-  path: '*',
+  path: '$',
   component: NotFoundPage,
 });
 
 // Create route tree
 const routeTree = rootRoute.addChildren([
+  indexRoute,
   loginRoute,
   dashboardRoute,
   reimbursementsRoute,
@@ -117,6 +135,7 @@ const routeTree = rootRoute.addChildren([
 ]);
 
 // Create router
-export const router = createRouter({ 
+export const router = createRouter({
   routeTree,
+  defaultNotFoundComponent: NotFoundPage,
 });
