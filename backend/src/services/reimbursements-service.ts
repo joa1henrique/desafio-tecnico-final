@@ -89,7 +89,20 @@ function ensureStatusTransition(current: StatusSolicitacao, next: StatusSolicita
   }
 }
 
-export async function listReimbursements(user: AuthenticatedUser, page: number, pageSize: number) {
+export type ReimbursementFilters = {
+  status?: StatusSolicitacao;
+  categoriaId?: string;
+  colaboradorNome?: string;
+  sortBy?: "criadoEm" | "valor";
+  sortOrder?: "asc" | "desc";
+};
+
+export async function listReimbursements(
+  user: AuthenticatedUser,
+  page: number,
+  pageSize: number,
+  filtersOptions?: ReimbursementFilters
+) {
   const skip = (page - 1) * pageSize;
   const filters: Prisma.SolicitacaoWhereInput = {};
 
@@ -99,10 +112,25 @@ export async function listReimbursements(user: AuthenticatedUser, page: number, 
 
   if (user.perfil === PerfilUsuario.GESTOR) {
     filters.status = StatusSolicitacao.ENVIADO;
+  } else if (user.perfil === PerfilUsuario.FINANCEIRO) {
+    filters.status = StatusSolicitacao.APROVADO;
+  } else if (filtersOptions?.status && user.perfil === PerfilUsuario.ADMIN) {
+    filters.status = filtersOptions.status;
   }
 
-  if (user.perfil === PerfilUsuario.FINANCEIRO) {
-    filters.status = StatusSolicitacao.APROVADO;
+  if (filtersOptions?.categoriaId) {
+    filters.categoriaId = filtersOptions.categoriaId;
+  }
+
+  if (filtersOptions?.colaboradorNome && user.perfil !== PerfilUsuario.COLABORADOR) {
+    filters.solicitante = {
+      nome: { contains: filtersOptions.colaboradorNome, mode: "insensitive" },
+    };
+  }
+
+  let orderBy: any = { criadoEm: "desc" };
+  if (filtersOptions?.sortBy) {
+    orderBy = { [filtersOptions.sortBy]: filtersOptions.sortOrder || "desc" };
   }
 
   const [items, total] = await Promise.all([
@@ -110,7 +138,7 @@ export async function listReimbursements(user: AuthenticatedUser, page: number, 
       where: filters,
       skip,
       take: pageSize,
-      orderBy: { criadoEm: "desc" },
+      orderBy,
       include: {
         solicitante: {
           select: {

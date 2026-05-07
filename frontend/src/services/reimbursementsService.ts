@@ -10,9 +10,9 @@ import type {
   UpdateReimbursementInput,
 } from "@/types";
 
-export async function listReimbursements(page = 1, pageSize = 20) {
+export async function listReimbursements(page = 1, pageSize = 20, filters?: Record<string, string>) {
   const response = await api.get<ApiPage<Reimbursement>>("/reimbursements", {
-    params: { page, pageSize },
+    params: { page, pageSize, ...filters },
   });
 
   return response.data;
