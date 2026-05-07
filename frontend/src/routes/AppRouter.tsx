@@ -7,6 +7,7 @@ import { ReimbursementNewPage, ReimbursementEditPage } from '@/pages/Reimburseme
 import { PendingReimbursementsPage, ApprovedReimbursementsPage } from '@/pages/ReimbursementWorkflowPage';
 import { CategoriesPage } from '@/pages/CategoriesPage';
 import { UsersPage } from '@/pages/UsersPage';
+import { ReportsPage } from '@/pages/ReportsPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { App } from '@/App';
 
@@ -85,6 +86,13 @@ const usersRoute = createRoute({
   component: UsersPage,
 });
 
+// Reports route (admin only)
+const reportsRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: '/reports',
+  component: ReportsPage,
+});
+
 // 404 route (catch-all)
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -104,6 +112,7 @@ const routeTree = rootRoute.addChildren([
   reimbursementEditRoute,
   categoriesRoute,
   usersRoute,
+  reportsRoute,
   notFoundRoute,
 ]);
 

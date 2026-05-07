@@ -168,7 +168,7 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
     reset({
       categoriaId: reimbursement.categoriaId,
       descricao: reimbursement.descricao,
-      valor: reimbursement.valor,
+      valor: reimbursement.valor.replace(".", ","),
       dataDespesa: dayjs(reimbursement.dataDespesa).format("YYYY-MM-DD"),
       anexos: [],
     });

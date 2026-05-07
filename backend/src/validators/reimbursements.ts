@@ -58,3 +58,13 @@ export const createAttachmentSchema = z.object({
   params: z.object({ id: idSchema }),
   query: z.object({}),
 });
+
+export const financialReportSchema = z.object({
+  body: z.object({}).optional(),
+  params: z.object({}).optional(),
+  query: z.object({
+    dataInicio: z.coerce.date().optional(),
+    dataFim: z.coerce.date().optional(),
+    categoriaId: idSchema.optional(),
+  }),
+});
