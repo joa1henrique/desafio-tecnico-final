@@ -13,10 +13,19 @@ function requireUser(req: Request) {
 
 export async function listReimbursements(req: Request, res: Response) {
   const user = requireUser(req);
-  const page = Number(req.query.page) || 1;
-  const pageSize = Number(req.query.pageSize) || 20;
+  const query = (req.validated?.query || req.query) as any;
+  const page = Number(query.page) || 1;
+  const pageSize = Number(query.pageSize) || 20;
 
-  const result = await reimbursementsService.listReimbursements(user, page, pageSize);
+  const filtersOptions = {
+    status: query.status,
+    categoriaId: query.categoriaId,
+    colaboradorNome: query.colaboradorNome,
+    sortBy: query.sortBy,
+    sortOrder: query.sortOrder,
+  };
+
+  const result = await reimbursementsService.listReimbursements(user, page, pageSize, filtersOptions);
   return res.status(200).json(result);
 }
 

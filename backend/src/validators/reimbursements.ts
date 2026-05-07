@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { idSchema, paginationSchema } from "./common";
+import { idSchema, paginationSchema, statusSchema } from "./common";
 
 export const createReimbursementSchema = z.object({
   body: z.object({
@@ -32,7 +32,13 @@ export const reimbursementIdParamSchema = z.object({
 export const listReimbursementsSchema = z.object({
   body: z.object({}).optional(),
   params: z.object({}).optional(),
-  query: paginationSchema,
+  query: paginationSchema.extend({
+    status: statusSchema.optional(),
+    categoriaId: idSchema.optional(),
+    colaboradorNome: z.string().optional(),
+    sortBy: z.enum(["criadoEm", "valor"]).optional(),
+    sortOrder: z.enum(["asc", "desc"]).optional(),
+  }),
 });
 
 export const rejectReimbursementSchema = z.object({
