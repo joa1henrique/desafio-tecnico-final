@@ -70,6 +70,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       await logoutRequest();
+    } catch (error) {
+      console.error("Logout API falhou, limpando sessão localmente", error);
     } finally {
       clearAuthSession();
       setSession(null);

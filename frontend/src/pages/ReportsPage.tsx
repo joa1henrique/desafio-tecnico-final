@@ -207,8 +207,9 @@ export function ReportsPage() {
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Data Início</label>
+                <label htmlFor="dataInicio" className="text-sm font-medium">Data Início</label>
                 <Input
+                  id="dataInicio"
                   type="date"
                   value={dataInicio}
                   max={dataFim || undefined}
@@ -219,8 +220,9 @@ export function ReportsPage() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Data Fim</label>
+                <label htmlFor="dataFim" className="text-sm font-medium">Data Fim</label>
                 <Input
+                  id="dataFim"
                   type="date"
                   value={dataFim}
                   min={dataInicio || undefined}
