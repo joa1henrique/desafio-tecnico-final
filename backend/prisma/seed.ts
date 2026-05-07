@@ -21,7 +21,7 @@ async function main() {
   
   const categorias = [transporte, alimentacao, hospedagem, outros]
 
-  console.log('Criando usuários base...')
+  console.log('Criando usuários...')
   const admin = await prisma.usuario.create({
     data: { nome: 'Admin', email: 'admin@exemplo.com', senha: passwordHash, perfil: PerfilUsuario.ADMIN },
   })
@@ -31,13 +31,11 @@ async function main() {
   const colab1 = await prisma.usuario.create({
     data: { nome: 'Colaborador 1', email: 'colaborador@exemplo.com', senha: passwordHash, perfil: PerfilUsuario.COLABORADOR },
   })
-
-  console.log('Adicionando novos colaboradores...')
   const colab2 = await prisma.usuario.create({
-    data: { nome: 'Colaborador 2', email: 'colaborador2@email.com', senha: passwordHash, perfil: PerfilUsuario.COLABORADOR },
+    data: { nome: 'Colaborador 2', email: 'colaborador2@exemplo.com', senha: passwordHash, perfil: PerfilUsuario.COLABORADOR },
   })
   const colab3 = await prisma.usuario.create({
-    data: { nome: 'Colaborador 3', email: 'colaborador3@email.com', senha: passwordHash, perfil: PerfilUsuario.COLABORADOR },
+    data: { nome: 'Colaborador 3', email: 'colaborador3@exemplo.com', senha: passwordHash, perfil: PerfilUsuario.COLABORADOR },
   })
 
   const usuarios = [colab1, colab2, colab3]
