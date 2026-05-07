@@ -93,7 +93,7 @@ export type ReimbursementFilters = {
   status?: StatusSolicitacao;
   categoriaId?: string;
   colaboradorNome?: string;
-  sortBy?: "criadoEm" | "valor";
+  sortBy?: "dataDespesa" | "valor";
   sortOrder?: "asc" | "desc";
 };
 
@@ -128,7 +128,7 @@ export async function listReimbursements(
     };
   }
 
-  let orderBy: any = { criadoEm: "desc" };
+  let orderBy: any = { dataDespesa: "desc" };
   if (filtersOptions?.sortBy) {
     orderBy = { [filtersOptions.sortBy]: filtersOptions.sortOrder || "desc" };
   }
