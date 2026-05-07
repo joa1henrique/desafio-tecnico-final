@@ -21,6 +21,7 @@ import {
   listReimbursementHistory,
   payReimbursement,
   rejectReimbursement,
+  cancelReimbursement,
 } from "@/services/reimbursementsService";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { HistoryTimeline } from "@/components/ui/history-timeline";
@@ -145,6 +146,28 @@ export function ReimbursementDetailPage() {
     }
   }
 
+  async function handleCancel() {
+    if (!id) {
+      return;
+    }
+
+    if (!window.confirm("Tem certeza que deseja cancelar esta solicitação?")) {
+      return;
+    }
+
+    setIsActionLoading(true);
+
+    try {
+      await cancelReimbursement(id);
+      toast.success("Solicitação cancelada com sucesso");
+      await refreshData();
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Não foi possível cancelar a solicitação.");
+    } finally {
+      setIsActionLoading(false);
+    }
+  }
+
   async function handlePay() {
     if (!id) {
       return;
@@ -226,7 +249,10 @@ export function ReimbursementDetailPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 {user?.perfil === "COLABORADOR" && reimbursement.status === "RASCUNHO" && (
-                  <div className="flex justify-end">
+                  <div className="flex flex-wrap justify-end gap-3">
+                    <Button variant="destructive" onClick={handleCancel} disabled={isActionLoading}>
+                      {isActionLoading ? "Cancelando..." : "Cancelar"}
+                    </Button>
                     <Link to="/reimbursements/$id/edit" params={{ id: reimbursement.id }}>
                       <Button variant="outline">Editar solicitação</Button>
                     </Link>
