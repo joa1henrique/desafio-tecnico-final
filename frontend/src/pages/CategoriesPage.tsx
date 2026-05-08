@@ -104,7 +104,7 @@ export function CategoriesPage() {
       resetCreate({ nome: "", ativo: "true" });
       await mutate();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível criar a categoria.");
+      toast.error(getApiErrorMessage(err, "Não foi possível criar a categoria."));
     } finally {
       setIsSavingCreate(false);
     }
@@ -126,7 +126,7 @@ export function CategoriesPage() {
       setSelectedCategory(null);
       await mutate();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível atualizar a categoria.");
+      toast.error(getApiErrorMessage(err, "Não foi possível atualizar a categoria."));
     } finally {
       setIsSavingEdit(false);
     }

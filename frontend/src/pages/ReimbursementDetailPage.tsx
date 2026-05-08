@@ -122,7 +122,7 @@ export function ReimbursementDetailPage() {
       toast.success("Solicitação aprovada com sucesso");
       await refreshData();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível aprovar a solicitação.");
+      toast.error(getApiErrorMessage(err, "Não foi possível aprovar a solicitação."));
     } finally {
       setIsActionLoading(false);
     }
@@ -141,7 +141,7 @@ export function ReimbursementDetailPage() {
       setIsRejectDialogOpen(false);
       await refreshData();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível rejeitar a solicitação.");
+      toast.error(getApiErrorMessage(err, "Não foi possível rejeitar a solicitação."));
     } finally {
       setIsActionLoading(false);
     }
@@ -163,7 +163,7 @@ export function ReimbursementDetailPage() {
       toast.success("Solicitação cancelada com sucesso");
       await refreshData();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível cancelar a solicitação.");
+      toast.error(getApiErrorMessage(err, "Não foi possível cancelar a solicitação."));
     } finally {
       setIsActionLoading(false);
     }
@@ -181,7 +181,7 @@ export function ReimbursementDetailPage() {
       toast.success("Solicitação marcada como paga");
       await refreshData();
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Não foi possível marcar como paga.");
+      toast.error(getApiErrorMessage(err, "Não foi possível marcar como paga."));
     } finally {
       setIsActionLoading(false);
     }
