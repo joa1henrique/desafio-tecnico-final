@@ -7,6 +7,7 @@ export type ReportFilters = {
   categoriaId?: string;
 };
 
+//calcula o resumo financeiro de valores pagos e aprovados
 export async function getFinancialReport(filters?: ReportFilters) {
   const baseWhere: Prisma.SolicitacaoWhereInput = {};
 
@@ -16,7 +17,6 @@ export async function getFinancialReport(filters?: ReportFilters) {
       baseWhere.dataDespesa.gte = filters.dataInicio;
     }
     if (filters.dataFim) {
-      // Ajusta dataFim para o final do dia
       const dFim = new Date(filters.dataFim);
       dFim.setHours(23, 59, 59, 999);
       baseWhere.dataDespesa.lte = dFim;

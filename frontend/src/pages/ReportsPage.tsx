@@ -29,7 +29,7 @@ function BarChart({
       className="w-full"
       style={{ maxHeight: 300 }}
     >
-      {/* Grid lines */}
+      {/* divisórias */}
       {[0.25, 0.5, 0.75, 1].map((pct) => (
         <line
           key={pct}
@@ -42,7 +42,7 @@ function BarChart({
           strokeDasharray="4"
         />
       ))}
-      {/* Bars */}
+      {/* barras */}
       {data.map((d, i) => {
         const barHeight = maxVal > 0 ? (d.value / maxVal) * (chartHeight - 20) : 0;
         const x = gap + i * (barWidth + gap);
@@ -73,7 +73,7 @@ function BarChart({
                 fill="freeze"
               />
             </rect>
-            {/* Value label */}
+            {/* label valor */}
             <text
               x={x + barWidth / 2}
               y={y - 6}
@@ -84,7 +84,7 @@ function BarChart({
             >
               {formatValue ? formatValue(d.value) : d.value}
             </text>
-            {/* Bottom label */}
+            {/* label de baixo */}
             <text
               x={x + barWidth / 2}
               y={chartHeight + 20}
@@ -101,7 +101,7 @@ function BarChart({
   );
 }
 
-// ── Page Component ───────────────────────────────────────────────────
+// ── page Component ───────────────────────────────────────────────────
 export function ReportsPage() {
   const { user, isAuthenticated } = useAuth();
 
@@ -191,7 +191,7 @@ export function ReportsPage() {
   return (
     <AppLayout>
       <div className="space-y-8 max-w-5xl">
-        {/* Title */}
+        {/* título */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Relatório Financeiro</h1>
           <p className="text-muted-foreground">
@@ -199,7 +199,7 @@ export function ReportsPage() {
           </p>
         </div>
 
-        {/* Filtros */}
+        {/* filtros */}
         <Card>
           <CardHeader>
             <CardTitle className="text-lg">Filtros</CardTitle>
@@ -262,7 +262,7 @@ export function ReportsPage() {
           </CardContent>
         </Card>
 
-        {/* Loading / Error */}
+        {/* loading / error */}
         {isLoading && !report && (
           <p className="text-sm text-muted-foreground">Carregando relatório...</p>
         )}
@@ -270,7 +270,7 @@ export function ReportsPage() {
           <p className="text-sm text-destructive">Erro ao carregar relatório.</p>
         )}
 
-        {/* Summary Cards */}
+        {/* cards de resumo */}
         {report && (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -307,7 +307,7 @@ export function ReportsPage() {
               </Card>
             </div>
 
-            {/* Charts */}
+            {/* gráficos */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <Card>
                 <CardHeader>

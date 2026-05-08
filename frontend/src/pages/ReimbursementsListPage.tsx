@@ -96,7 +96,7 @@ export function ReimbursementsListPage() {
           </div>
         )}
 
-        {/* Filtros */}
+        {/* filtros */}
         <Card>
           <CardContent className="pt-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -269,7 +269,7 @@ export function ReimbursementsListPage() {
               </div>
             </div>
 
-            {/* Paginação */}
+            {/* paginação */}
             {totalPages > 1 && (
               <div className="flex items-center justify-between">
                 <p className="text-sm text-muted-foreground">

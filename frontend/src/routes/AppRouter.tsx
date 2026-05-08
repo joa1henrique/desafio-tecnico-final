@@ -12,13 +12,13 @@ import { ReportsPage } from '@/pages/ReportsPage';
 import { NotFoundPage } from '@/pages/NotFoundPage';
 import { App } from '@/App';
 
-// Root route
+//rota raiz
 const rootRoute = createRootRoute({
   component: App,
   notFoundComponent: NotFoundPage,
 });
 
-// Index route with redirect logic
+//rota inicial com logica de redirecionamento
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -33,91 +33,91 @@ const indexRoute = createRoute({
   },
 });
 
-// Login route
+//rota de login
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
   component: LoginPage,
 });
 
-// Dashboard route with protection
+//rota do painel com proteçao
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/dashboard',
   component: DashboardPage,
 });
 
-// Reimbursements list route
+//rota de listagem de reembolsos
 const reimbursementsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reimbursements',
   component: ReimbursementsListPage,
 });
 
-// Reimbursement creation route
+//rota de criaçao de reembolso
 const reimbursementNewRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reimbursements/new',
   component: ReimbursementNewPage,
 });
 
-// Reimbursement pending workflow route
+//rota do fluxo de reembolsos pendentes
 const reimbursementPendingRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reimbursements/pending',
   component: PendingReimbursementsPage,
 });
 
-// Reimbursement approved workflow route
+//rota do fluxo de reembolsos aprovados
 const reimbursementApprovedRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reimbursements/approved',
   component: ApprovedReimbursementsPage,
 });
 
-// Reimbursement detail route
+//rota de detalhes do reembolso
 const reimbursementDetailRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reimbursements/$id',
   component: ReimbursementDetailPage,
 });
 
-// Reimbursement edit route
+//rota de ediçao de reembolso
 const reimbursementEditRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reimbursements/$id/edit',
   component: ReimbursementEditPage,
 });
 
-// Categories management route
+//rota de gerenciamento de categorias
 const categoriesRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/categories',
   component: CategoriesPage,
 });
 
-// Users management route
+//rota de gerenciamento de usuarios
 const usersRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/users',
   component: UsersPage,
 });
 
-// Reports route (admin only)
+//rota de relatorios (apenas admin)
 const reportsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/reports',
   component: ReportsPage,
 });
 
-// 404 route (catch-all)
+//rota 404 (qualquer rota que nao exista cai aqui tambem)
 const notFoundRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '$',
   component: NotFoundPage,
 });
 
-// Create route tree
+//criar arvore de rotas
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
@@ -134,7 +134,7 @@ const routeTree = rootRoute.addChildren([
   notFoundRoute,
 ]);
 
-// Create router
+//criar roteador
 export const router = createRouter({
   routeTree,
   defaultNotFoundComponent: NotFoundPage,

@@ -199,13 +199,13 @@ export function ReimbursementDetailPage() {
   return (
     <AppLayout>
       <div className="space-y-8 max-w-4xl">
-        {/* Header */}
+        {/* header */}
         <div className="space-y-2">
           <h1 className="text-3xl font-bold tracking-tight">Detalhes da Solicitação</h1>
           <p className="text-muted-foreground">ID: {id}</p>
         </div>
 
-        {/* Loading State */}
+        {/* loading State */}
         {isLoading && (
           <Card>
             <CardContent className="flex items-center justify-center py-12">
@@ -217,7 +217,7 @@ export function ReimbursementDetailPage() {
           </Card>
         )}
 
-        {/* Error State */}
+        {/* error State */}
         {error && (
           <Card className="border-destructive/50 bg-destructive/10">
             <CardHeader>
@@ -231,10 +231,10 @@ export function ReimbursementDetailPage() {
           </Card>
         )}
 
-        {/* Detail Content */}
+        {/* verificaçao de carregamento, erro e dados */}
         {!isLoading && !error && reimbursement && (
           <>
-            {/* Main Card */}
+            {/* card principal */}
             <Card>
               <CardHeader>
                 <div className="flex items-start justify-between">
@@ -278,7 +278,7 @@ export function ReimbursementDetailPage() {
                   </div>
                 )}
 
-                {/* Grid de informações */}
+                {/* grid de informações */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Valor</p>
@@ -304,7 +304,7 @@ export function ReimbursementDetailPage() {
                   </div>
                 </div>
 
-                {/* Justificativa de Rejeição */}
+                {/* justificativa de rejeição */}
                 {reimbursement.justificativaRejeicao && (
                   <div className="p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
                     <p className="text-sm font-semibold text-destructive mb-2">Motivo da Rejeição:</p>
@@ -312,7 +312,7 @@ export function ReimbursementDetailPage() {
                   </div>
                 )}
 
-                {/* Anexos */}
+                {/* anexos */}
                 {reimbursement.anexos && reimbursement.anexos.length > 0 && (
                   <div>
                     <p className="text-sm font-semibold mb-2">Anexos ({reimbursement.anexos.length})</p>
@@ -335,7 +335,7 @@ export function ReimbursementDetailPage() {
               </CardContent>
             </Card>
 
-            {/* Histórico */}
+            {/* histórico */}
             {history && history.length > 0 && (
               <Card>
                 <CardHeader>

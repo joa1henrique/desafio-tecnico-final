@@ -3,6 +3,7 @@ import { PerfilUsuario } from "@prisma/client";
 import { ApiError } from "../errors/api-error";
 import { getStatusText } from "../utils/http-status";
 
+//bloqueia o acesso se o usuario nao possuir um dos perfis permitidos
 export const requireRole = (...roles: PerfilUsuario[]) => {
   return (req: Request, _res: Response, next: NextFunction) => {
     if (!req.user) {

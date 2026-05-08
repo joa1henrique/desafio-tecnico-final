@@ -15,6 +15,7 @@ declare module "express-serve-static-core" {
   }
 }
 
+//valida os dados da requisiçao (body, params, query) usando esquemas zod
 export function validate(schema: ZodType<unknown>) {
   return (req: Request, _res: Response, next: NextFunction) => {
     try {
