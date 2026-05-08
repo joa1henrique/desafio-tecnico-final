@@ -30,7 +30,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"email\": \"admin@empresa.com\",\n    \"senha\": \"admin123\"\n}",
+							"raw": "{\n    \"email\": \"admin@exemplo.com\",\n    \"senha\": \"admin123\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
