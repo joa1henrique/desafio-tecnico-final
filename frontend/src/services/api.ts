@@ -30,9 +30,13 @@ api.interceptors.response.use(
   (error) => {
     //se a api retornar 401, limpamos o token local e mandamos para o login
     if (axios.isAxiosError(error) && error.response?.status === 401) {
-      clearAuthSession();
-      //redirecionamento forçado para garantir que o estado do app seja resetado
-      window.location.href = "/login";
+      const isLoginRequest = error.config?.url?.includes("/auth/login");
+
+      if (!isLoginRequest) {
+        clearAuthSession();
+        //redirecionamento forçado para garantir que o estado do app seja resetado
+        window.location.href = "/login";
+      }
     }
 
     return Promise.reject(error);

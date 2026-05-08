@@ -13,6 +13,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/hooks/useAuth";
 import { createCategory, listCategories, updateCategory } from "@/services/categoriesService";
 import type { Category } from "@/types";
+import { getApiErrorMessage } from "@/utils/error";
 
 const createCategorySchema = z.object({
   nome: z.string().trim().min(1, "Informe o nome da categoria"),
@@ -209,7 +210,7 @@ export function CategoriesPage() {
 
             {error && (
               <p className="text-sm text-destructive">
-                {error.message || "Não foi possível carregar as categorias."}
+                {getApiErrorMessage(error, "Não foi possível carregar as categorias.")}
               </p>
             )}
 

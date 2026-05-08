@@ -4,6 +4,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { getApiErrorMessage } from "@/utils/error";
 import { useAuth } from "@/hooks/useAuth";
 import { listReimbursements } from "@/services/reimbursementsService";
 import type { Reimbursement, ReimbursementStatus } from "@/types";
@@ -65,7 +66,7 @@ function ReimbursementWorkflowPage({ title, description, status, emptyLabel }: R
             </CardHeader>
             <CardContent>
               <p className="text-sm text-destructive">
-                {error.message || "Não foi possível carregar as solicitações."}
+                {getApiErrorMessage(error, "Não foi possível carregar as solicitações.")}
               </p>
             </CardContent>
           </Card>
