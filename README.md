@@ -1,84 +1,98 @@
 # Sistema de Gestão de Reembolsos Financeiros
 
-Este projeto é uma aplicação completa (Fullstack) para gerenciamento de reembolsos de despesas corporativas. O sistema permite que colaboradores enviem solicitações, gestores as analisem e o departamento financeiro processe os pagamentos, tudo com controle rigoroso de status e permissões.
+Este sistema é uma solução completa para o gerenciamento de despesas corporativas, permitindo o controle total desde a criação de um rascunho de reembolso até a liquidação financeira.
 
-## Estrutura do Projeto
+## Estrutura e Setup Geral
 
-O repositório está dividido em três partes principais:
+### Arquitetura de Pastas
+O repositório está organizado em uma estrutura de monorepo simplificado:
+- **backend/**: Servidor API REST, lógica de negócio e integração com banco de dados.
+- **frontend/**: Aplicação cliente (SPA) para interação do usuário.
+- **postman/**: Coleção de requisições e guia de uso da API.
 
-- **backend/**: API REST construída com Node.js, Express e Prisma (PostgreSQL).
-- **frontend/**: Interface do usuário moderna com React 19, Vite e Tailwind CSS.
-- **postman/**: Coleção de requisições e documentação detalhada da API para testes.
+### Tecnologias Base e Infraestrutura
+- **Banco de Dados**: PostgreSQL, escolhido para suportar múltiplas transações de status simultâneas e garantir a integridade da máquina de estados através de tipos nativos (Enums e UUIDs), superando os bloqueios de escrita e limitações de tipos do SQLite.
+- **Docker**: Utilizado via Docker Compose para subir a instância do banco de dados de forma rápida e isolada.
+- **Linguagem**: TypeScript utilizado em ambas as pontas para garantir consistência de tipos e segurança no desenvolvimento.
 
-## Pré-requisitos
+### Como Rodar o Projeto
+1.  **Banco de Dados**: Na raiz ou na pasta backend, execute `docker-compose up -d` para subir o PostgreSQL.
+2.  **Configuração**: Copie os arquivos `.env.example` para `.env` tanto no `/backend` quanto no `/frontend` e ajuste as variáveis se necessário.
+3.  **Backend**: Acesse `/backend`, execute `npm install`, `npx prisma migrate dev`, `npx prisma db seed` e `npm run dev`.
+4.  **Frontend**: Acesse `/frontend`, execute `npm install` e `npm run dev`.
 
-Antes de começar, você precisará ter instalado:
-- Node.js (v18 ou superior)
-- npm ou yarn
-- Docker e Docker Compose (opcional, para rodar o banco de dados)
+### Usuários de Teste (Seed)
+Após executar o comando de seed, você pode utilizar as seguintes credenciais para testar os diferentes fluxos (a senha para todos é `admin123`):
+- **Administrador**: `admin@exemplo.com`
+- **Gestor**: `gestor@exemplo.com`
+- **Financeiro**: `financeiro@exemplo.com`
+- **Colaborador**: `colaborador@exemplo.com`
 
-## Como Instalar e Rodar
+## Decisões Técnicas e Arquitetura
 
-### 1. Clonar o Repositório
-```bash
-git clone https://github.com/seu-usuario/desafio-tecnico-final.git
-cd desafio-tecnico-final
-```
+### Máquina de Estados (Workflow)
+A escolha de implementar uma máquina de estados no backend foi fundamental para garantir que as regras de negócio de um reembolso sejam invioláveis. Uma solicitação nunca pode "retroceder" de forma inválida ou pular etapas de aprovação, garantindo a integridade financeira do processo.
 
-### 2. Configurar o Backend
-Acesse a pasta do backend, instale as dependências e configure o banco de dados:
-```bash
-cd backend
-npm install
+### Controle de Acesso (RBAC)
+O sistema utiliza Role-Based Access Control tanto no backend (middlewares de autorização) quanto no frontend (proteção de rotas e visibilidade de componentes), garantindo que cada usuário interaja apenas com o que lhe é permitido.
 
-# Configure o arquivo .env (veja .env.example)
-# Se estiver usando Docker para o banco:
-docker-compose up -d
+### Componentização e UX
+No frontend, priorizou-se o uso de componentes reutilizáveis e estados globais leves (via SWR), focando em uma interface que responda rapidamente e forneça feedback claro em português para todas as ações do usuário.
 
-# Execute as migrations e o seed (dados iniciais)
-npx prisma migrate dev
-npx prisma db seed
+## Tecnologias Utilizadas (Ementa)
 
-# Inicie o servidor em modo de desenvolvimento
-npm run dev
-```
+Este projeto foi desenvolvido utilizando as tecnologias propostas:
+- **Linguagem**: TypeScript (tipagem estática em todo o projeto).
+- **Backend**: Node.js com Framework Express.
+- **ORM**: Prisma para modelagem e migração do banco de dados.
+- **Banco de Dados**: PostgreSQL (executado via Docker).
+- **Frontend**: React.js com Vite.
+- **Estilização**: shadcn/ui e Tailwind CSS.
+- **Roteamento**: TanStack Router.
+- **Testes**: Jest e Supertest (Backend); Jest e React Testing Library (Frontend).
 
-### 3. Configurar o Frontend
-Em um novo terminal, acesse a pasta do frontend e instale as dependências:
-```bash
-cd frontend
-npm install
 
-# Configure o arquivo .env (veja .env.example) com VITE_API_URL
-# Inicie a interface
-npm run dev
-```
+## Processos, Fluxos e Permissões
 
-## Credenciais de Acesso (Dados de Teste)
+O sistema opera baseado em um controle de acesso rigoroso por perfis (RBAC), onde cada tipo de usuário possui responsabilidades e visibilidades específicas dentro do fluxo de trabalho.
 
-O script de `seed` cria usuários de teste para cada perfil do sistema. A senha para todos é `admin123`.
+### Perfis de Usuário
+- **Colaborador**: É o autor das solicitações. Pode criar novos reembolsos, salvar rascunhos para edição posterior e enviar solicitações para análise. Sua visão é restrita apenas aos próprios reembolsos.
+- **Gestor**: Responsável pela primeira etapa de aprovação. Visualiza a fila de solicitações enviadas e decide pela aprovação ou rejeição (exigindo justificativa em caso de negativa).
+- **Financeiro**: Responsável pela liquidação do pagamento. Visualiza apenas solicitações que já foram aprovadas por um gestor e registra quando o pagamento foi efetivamente realizado.
+- **Administrador**: Possui visão global do sistema. Visualiza a listagem de usuários do sistema, gerencia as categorias de despesa, acompanha o histórico completo de todas as solicitações e tem acesso ao relatório consolidado de movimentações financeiras. Não pode aprovar solicitações nem pagar solicitações de reembolso.
 
-| Perfil | E-mail |
-| :--- | :--- |
-| **Administrador** | admin@exemplo.com |
-| **Gestor** | gestor@exemplo.com |
-| **Financeiro** | financeiro@exemplo.com |
-| **Colaborador** | colaborador@exemplo.com |
+### Fluxo da Solicitação
+1.  **Rascunho**: A solicitação é criada pelo colaborador e pode ser editada.
+2.  **Enviado**: O colaborador submete a solicitação, que entra na fila do gestor.
+3.  **Aprovado/Rejeitado**: O gestor avalia a solicitação. Se rejeitada, o fluxo encerra. Se aprovada, segue para o financeiro.
+4.  **Pago**: O departamento financeiro confirma o pagamento, finalizando o ciclo de vida da solicitação.
 
-## Funcionalidades Principais
+## Backend
 
-- **Fluxo de Aprovação**: Ciclo completo de vida de um reembolso (Rascunho -> Enviado -> Aprovado/Rejeitado -> Pago).
-- **Controle de Acesso (RBAC)**: Permissões granulares baseadas no perfil do usuário conectado.
-- **Relatórios Financeiros**: Painel administrativo com gráficos de valores pagos e a pagar.
-- **Gestão de Categorias**: Cadastro e manutenção de categorias de despesa.
-- **Documentação de API**: Coleção Postman pronta para uso para desenvolvedores.
+O servidor é construído com Node.js, Express e TypeScript, utilizando o Prisma como ORM para persistência em banco de dados PostgreSQL.
+
+### Máquina de Estados
+A integridade do fluxo de solicitações é garantida por uma máquina de estados. Cada transição de status é validada programaticamente, impedindo que uma solicitação pule etapas (ex: ser paga sem antes ser aprovada) ou seja alterada após o envio.
+
+### Características Técnicas
+- Autenticação via JWT (JSON Web Token).
+- Validação de dados de entrada com Zod.
+- Arquitetura em camadas (Controllers, Services, Middlewares).
+- Suíte de testes de integração com Jest e Supertest.
+
+## Frontend
+
+A interface do usuário é uma Single Page Application (SPA) moderna, desenvolvida com React 19 e Vite.
+
+### Design e Experiência do Usuário
+- **Interface Responsiva**: Desenvolvida com Tailwind CSS, adaptando-se a diferentes tamanhos de tela.
+- **Gerenciamento de Estado e Cache**: Utiliza SWR para consumo eficiente de dados da API, garantindo rapidez e consistência.
+- **Roteamento Tipado**: Implementado com TanStack Router, prevenindo erros de navegação e garantindo proteção de rotas por perfil.
+- **Feedback Constante**: Sistema de notificações (Toasts) e tratamentos de erro em português para garantir que o usuário compreenda cada interação.
 
 ## Documentação Detalhada
-
-Para informações técnicas específicas de cada camada, consulte:
+Guias detalhados de configuração e execução de cada módulo:
 - [Documentação do Backend](./backend/README.md)
 - [Documentação do Frontend](./frontend/README.md)
 - [Guia da Coleção Postman](./postman/README.md)
-
----
-*Este projeto foi desenvolvido como um desafio técnico final, focando em boas práticas de engenharia de software, segurança e experiência do usuário.*

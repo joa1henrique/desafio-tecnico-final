@@ -3,6 +3,7 @@ import { AppLayout } from "@/components/layout/AppLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/hooks/useAuth";
 import { listUsers } from "@/services/usersService";
+import { getApiErrorMessage } from "@/utils/error";
 
 export function UsersPage() {
   const { isAuthenticated, user, permissions } = useAuth();
@@ -67,7 +68,7 @@ export function UsersPage() {
 
             {error && (
               <p className="text-sm text-destructive">
-                {error.message || "Não foi possível carregar os usuários."}
+                {getApiErrorMessage(error, "Não foi possível carregar os usuários.")}
               </p>
             )}
 
