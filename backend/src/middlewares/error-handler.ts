@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { ApiError } from "../errors/api-error";
 import { getStatusText } from "../utils/http-status";
 
+//captura todos os erros lançados na aplicaçao e formata a resposta json
 export function errorHandler(
   err: unknown,
   _req: Request,

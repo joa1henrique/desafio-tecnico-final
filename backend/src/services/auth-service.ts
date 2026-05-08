@@ -10,6 +10,7 @@ type LoginInput = {
   senha: string;
 };
 
+//valida as credenciais do usuario e gera o token jwt de acesso
 export async function login(input: LoginInput) {
   const user = await prisma.usuario.findUnique({
     where: { email: input.email },

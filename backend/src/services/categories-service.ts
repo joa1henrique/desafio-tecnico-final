@@ -13,6 +13,7 @@ type UpdateCategoryInput = {
   ativo?: boolean;
 };
 
+//lista as categorias de despesa, com paginaçao
 export async function listCategories(page: number, pageSize: number) {
   const skip = (page - 1) * pageSize;
 
@@ -28,6 +29,7 @@ export async function listCategories(page: number, pageSize: number) {
   return serializeDates({ items, page, pageSize, total });
 }
 
+//cria uma nova categoria garantindo que o nome seja unico
 export async function createCategory(input: CreateCategoryInput) {
   const existing = await prisma.categoria.findUnique({ where: { nome: input.nome } });
   if (existing) {
@@ -41,6 +43,7 @@ export async function createCategory(input: CreateCategoryInput) {
   return serializeDates(category);
 }
 
+//atualiza os dados de uma categoria existente
 export async function updateCategory(id: string, input: UpdateCategoryInput) {
   const existing = await prisma.categoria.findUnique({ where: { id } });
   if (!existing) {

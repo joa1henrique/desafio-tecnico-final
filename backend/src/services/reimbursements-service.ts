@@ -29,6 +29,7 @@ type CreateAttachmentInput = {
   tipoArquivo: string;
 };
 
+//busca uma solicitaçao pelo id ou lanca erro 404 se nao existir
 async function getSolicitacaoOrThrow(id: string) {
   const solicitacao = await prisma.solicitacao.findUnique({
     where: { id },
@@ -54,6 +55,7 @@ async function getSolicitacaoOrThrow(id: string) {
   return solicitacao;
 }
 
+//garante que o usuario tentando acessar é o dono da solicitaçao
 function ensureOwner(userId: string, solicitanteId: string) {
   if (userId !== solicitanteId) {
     throw new ApiError(403, "Forbidden", getStatusText(403));
@@ -67,6 +69,7 @@ async function ensureCategoriaAtiva(categoriaId: string) {
   }
 }
 
+//registra um novo evento no log de auditoria da solicitaçao
 async function registerHistory(
   solicitacaoId: string,
   usuarioId: string,
@@ -97,6 +100,7 @@ export type ReimbursementFilters = {
   sortOrder?: "asc" | "desc";
 };
 
+//lista solicitaçoes aplicando regras de visibilidade baseadas no perfil do usuario
 export async function listReimbursements(
   user: AuthenticatedUser,
   page: number,
@@ -157,6 +161,7 @@ export async function listReimbursements(
   return serializeDates({ items, page, pageSize, total });
 }
 
+//cria um novo rascunho de reembolso e registra no historico
 export async function createReimbursement(user: AuthenticatedUser, input: CreateReimbursementInput) {
   await ensureCategoriaAtiva(input.categoriaId);
 
@@ -181,6 +186,7 @@ export async function createReimbursement(user: AuthenticatedUser, input: Create
   return serializeDates(solicitacao);
 }
 
+//retorna os dados detalhados de um reembolso especifico
 export async function getReimbursement(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
 
@@ -191,6 +197,7 @@ export async function getReimbursement(user: AuthenticatedUser, id: string) {
   return serializeDates(solicitacao);
 }
 
+//atualiza os dados de um rascunho existente
 export async function updateReimbursement(user: AuthenticatedUser, id: string, input: UpdateReimbursementInput) {
   const solicitacao = await getSolicitacaoOrThrow(id);
   ensureOwner(user.id, solicitacao.solicitanteId);
@@ -225,6 +232,7 @@ export async function updateReimbursement(user: AuthenticatedUser, id: string, i
   return serializeDates(updated);
 }
 
+//envia o rascunho para analise do gestor
 export async function submitReimbursement(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
 
@@ -246,6 +254,7 @@ export async function submitReimbursement(user: AuthenticatedUser, id: string) {
   return serializeDates(updated);
 }
 
+//aprova a solicitaçao permitindo que ela siga para o financeiro
 export async function approveReimbursement(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
   ensureStatusTransition(solicitacao.status, StatusSolicitacao.APROVADO);
@@ -265,6 +274,7 @@ export async function approveReimbursement(user: AuthenticatedUser, id: string) 
   return serializeDates(updated);
 }
 
+//rejeita a solicitaçao exigindo uma justificativa
 export async function rejectReimbursement(
   user: AuthenticatedUser,
   id: string,
@@ -291,10 +301,11 @@ export async function rejectReimbursement(
   return serializeDates(updated);
 }
 
+//cancela a solicitaçao (disponivel apenas para o dono)
 export async function cancelReimbursement(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
 
-  // Only owner (colaborador) can cancel their own request
+  //apenas o colaborador pode cancelar a propria solicitacao
   ensureOwner(user.id, solicitacao.solicitanteId);
 
   ensureStatusTransition(solicitacao.status, StatusSolicitacao.CANCELADO);
@@ -314,6 +325,7 @@ export async function cancelReimbursement(user: AuthenticatedUser, id: string) {
   return serializeDates(updated);
 }
 
+//finaliza o fluxo marcando a solicitaçao como paga
 export async function payReimbursement(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
   ensureStatusTransition(solicitacao.status, StatusSolicitacao.PAGO);
@@ -333,6 +345,7 @@ export async function payReimbursement(user: AuthenticatedUser, id: string) {
   return serializeDates(updated);
 }
 
+//lista todos os eventos ocorridos com aquela solicitaçao
 export async function listHistory(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
 
@@ -348,6 +361,7 @@ export async function listHistory(user: AuthenticatedUser, id: string) {
   return serializeDates(historicos);
 }
 
+//anexa um novo comprovante ou documento ao reembolso
 export async function createAttachment(
   user: AuthenticatedUser,
   id: string,
@@ -376,6 +390,7 @@ export async function createAttachment(
   return serializeDates(anexo);
 }
 
+//lista todos os anexos vinculados a solicitaçao
 export async function listAttachments(user: AuthenticatedUser, id: string) {
   const solicitacao = await getSolicitacaoOrThrow(id);
 

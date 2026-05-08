@@ -5,6 +5,7 @@ export type FinancialReport = {
   aPagar: { total: string; count: number };
 };
 
+//gera o relatorio financeiro consolidado, aplicando os filtros de data e categoria
 export async function getFinancialReport(filters?: {
   dataInicio?: string;
   dataFim?: string;

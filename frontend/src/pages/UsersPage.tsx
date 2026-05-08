@@ -14,7 +14,7 @@ export function UsersPage() {
   } = useSWR(
     isAuthenticated ? "users-management" : null,
     async () => {
-      // Fetching up to 100 users for this simple view
+      //busca inicial em 100 registros
       const response = await listUsers(1, 100);
       return response.items;
     },

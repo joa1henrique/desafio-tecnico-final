@@ -23,6 +23,7 @@ function userSelect() {
   } as const;
 }
 
+//cria um novo usuario com senha criptografada e validaçao de email
 export async function createUser(input: CreateUserInput) {
   const existing = await prisma.usuario.findUnique({ where: { email: input.email } });
   if (existing) {
@@ -44,6 +45,7 @@ export async function createUser(input: CreateUserInput) {
   return serializeDates(user);
 }
 
+//lista os usuarios cadastrados com paginaçao e sem expor a senha
 export async function listUsers(page: number, pageSize: number) {
   const skip = (page - 1) * pageSize;
 

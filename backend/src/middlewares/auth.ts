@@ -10,6 +10,7 @@ type JwtPayload = {
   perfil: PerfilUsuario;
 };
 
+//verifica a presença e validade do token jwt no cabeçalho da requisiçao
 export function authenticate(req: Request, _res: Response, next: NextFunction) {
   const header = req.headers.authorization;
   let token: string | undefined;
