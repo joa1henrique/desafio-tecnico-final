@@ -26,7 +26,9 @@ Após executar o comando de seed, você pode utilizar as seguintes credenciais p
 - **Administrador**: `admin@exemplo.com`
 - **Gestor**: `gestor@exemplo.com`
 - **Financeiro**: `financeiro@exemplo.com`
-- **Colaborador**: `colaborador@exemplo.com`
+- **Colaborador 1**: `colaborador@exemplo.com`
+- **Colaborador 2**: `colaborador2@exemplo.com`
+- **Colaborador 3**: `colaborador3@exemplo.com`
 
 ## Decisões Técnicas e Arquitetura
 
