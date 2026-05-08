@@ -2,7 +2,7 @@
 
 Esta é a interface do usuário do Sistema de Reembolsos, desenvolvida com React e focada em uma experiência moderna, rápida e intuitiva para o gerenciamento de despesas corporativas.
 
-## 🛠️ Tecnologias Utilizadas
+## Tecnologias Utilizadas
 
 - **React 19**: Biblioteca core para construção da interface.
 - **Vite**: Ferramenta de build e dev server extremamente rápido.
@@ -13,7 +13,7 @@ Esta é a interface do usuário do Sistema de Reembolsos, desenvolvida com React
 - **React Hook Form & Zod**: Gestão de formulários complexos com validação robusta no lado do cliente.
 - **React Toastify**: Sistema de notificações visuais para feedback imediato ao usuário.
 
-## 🎨 Design e UX
+## Design e UX
 
 A interface foi projetada seguindo padrões modernos de acessibilidade e usabilidade:
 
@@ -22,7 +22,7 @@ A interface foi projetada seguindo padrões modernos de acessibilidade e usabili
 - **Proteção de Rotas**: Redirecionamento inteligente baseado no status de autenticação.
 - **Responsividade**: Layout adaptável para diferentes tamanhos de tela.
 
-## 📁 Estrutura de Pastas
+## Estrutura de Pastas
 
 - `/src/components`: Componentes reutilizáveis divididos em `ui` (base) e `layout`.
 - `/src/pages`: Componentes de página que representam as rotas principais.
@@ -32,7 +32,7 @@ A interface foi projetada seguindo padrões modernos de acessibilidade e usabili
 - `/src/routes`: Configuração e definição das rotas do sistema.
 - `/src/utils`: Funções utilitárias (formatação de moeda, datas, etc.).
 
-## 🚀 Como Executar
+## Como Executar
 
 1.  **Instalação**:
     ```bash
@@ -55,7 +55,7 @@ A interface foi projetada seguindo padrões modernos de acessibilidade e usabili
     npm run build
     ```
 
-## 🧪 Testes
+## Testes
 
 Para executar os testes de componentes:
 ```bash
