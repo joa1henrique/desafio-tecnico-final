@@ -61,6 +61,3 @@ Para executar os testes de componentes:
 ```bash
 npm test
 ```
-
----
-*A interface se comunica com o backend via JSON, utilizando tokens JWT armazenados de forma segura para manter a sessão do usuário.*

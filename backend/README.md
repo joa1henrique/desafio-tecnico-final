@@ -62,6 +62,3 @@ Para rodar a suíte de testes de integração:
 ```bash
 npm test
 ```
-
----
-*Este backend foi projetado seguindo as melhores práticas de API REST, com respostas HTTP coerentes e tratamento global de erros.*
