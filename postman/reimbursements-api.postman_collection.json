@@ -18,7 +18,7 @@
 								"exec": [
 									"const response = pm.response.json();",
 									"if (response.token) {",
-									"    pm.environment.set(\"token\", response.token);",
+									"    pm.collectionVariables.set(\"token\", response.token);",
 									"}"
 								],
 								"type": "text/javascript"
@@ -26,6 +26,9 @@
 						}
 					],
 					"request": {
+						"auth": {
+							"type": "noauth"
+						},
 						"method": "POST",
 						"header": [],
 						"body": {
@@ -38,12 +41,49 @@
 							}
 						},
 						"url": {
-							"raw": "{{baseUrl}}/login",
+							"raw": "{{baseUrl}}/auth/login",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
+								"auth",
 								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verificar Permissões",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/permissions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"permissions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"auth",
+								"logout"
 							]
 						}
 					},
@@ -75,11 +115,6 @@
 								{
 									"key": "pageSize",
 									"value": "20"
-								},
-								{
-									"key": "status",
-									"value": "ENVIADO",
-									"disabled": true
 								}
 							]
 						}
@@ -87,13 +122,41 @@
 					"response": []
 				},
 				{
-					"name": "Criar Reembolso (Rascunho)",
+					"name": "Relatório Financeiro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/reimbursements/reports?dataInicio=2024-01-01&dataFim=2024-12-31",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"reimbursements",
+								"reports"
+							],
+							"query": [
+								{
+									"key": "dataInicio",
+									"value": "2024-01-01"
+								},
+								{
+									"key": "dataFim",
+									"value": "2024-12-31"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Criar Reembolso",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"categoriaId\": \"id-da-categoria\",\n    \"descricao\": \"Jantar com cliente X\",\n    \"valor\": 150.50,\n    \"dataDespesa\": \"2024-05-08\"\n}",
+							"raw": "{\n    \"categoriaId\": \"id-aqui\",\n    \"descricao\": \"Gasto com viagem\",\n    \"valor\": 250.00,\n    \"dataDespesa\": \"2024-05-10\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -113,7 +176,7 @@
 					"response": []
 				},
 				{
-					"name": "Detalhes do Reembolso",
+					"name": "Detalhes",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -162,7 +225,7 @@
 					"response": []
 				},
 				{
-					"name": "Aprovar Reembolso",
+					"name": "Aprovar",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -187,13 +250,13 @@
 					"response": []
 				},
 				{
-					"name": "Rejeitar Reembolso",
+					"name": "Rejeitar",
 					"request": {
 						"method": "POST",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"justificativaRejeicao\": \"Faltou o comprovante fiscal legível.\"\n}",
+							"raw": "{\n    \"justificativaRejeicao\": \"Documento inválido\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -221,7 +284,7 @@
 					"response": []
 				},
 				{
-					"name": "Pagar Reembolso",
+					"name": "Pagar",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -246,7 +309,7 @@
 					"response": []
 				},
 				{
-					"name": "Listar Histórico",
+					"name": "Histórico",
 					"request": {
 						"method": "GET",
 						"header": [],
@@ -259,40 +322,6 @@
 								"reimbursements",
 								":id",
 								"history"
-							],
-							"variable": [
-								{
-									"key": "id",
-									"value": ""
-								}
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Adicionar Anexo",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\n    \"nomeArquivo\": \"nota_fiscal.pdf\",\n    \"urlArquivo\": \"https://exemplo.com/nota.pdf\",\n    \"tipoArquivo\": \"PDF\"\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{baseUrl}}/reimbursements/:id/attachments",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"reimbursements",
-								":id",
-								"attachments"
 							],
 							"variable": [
 								{
@@ -333,7 +362,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nome\": \"Hospedagem\",\n    \"ativo\": true\n}",
+							"raw": "{\n    \"nome\": \"Viagens Internacionais\",\n    \"ativo\": true\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -381,7 +410,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n    \"nome\": \"João Silva\",\n    \"email\": \"joao@empresa.com\",\n    \"senha\": \"senha123\",\n    \"perfil\": \"COLABORADOR\"\n}",
+							"raw": "{\n    \"nome\": \"João Silva\",\n    \"email\": \"joao@exemplo.com\",\n    \"senha\": \"senha123\",\n    \"perfil\": \"COLABORADOR\"\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -395,39 +424,6 @@
 							],
 							"path": [
 								"users"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "Relatórios",
-			"item": [
-				{
-					"name": "Relatório Financeiro",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "{{baseUrl}}/reimbursements/reports?dataInicio=2024-01-01&dataFim=2024-12-31",
-							"host": [
-								"{{baseUrl}}"
-							],
-							"path": [
-								"reimbursements",
-								"reports"
-							],
-							"query": [
-								{
-									"key": "dataInicio",
-									"value": "2024-01-01"
-								},
-								{
-									"key": "dataFim",
-									"value": "2024-12-31"
-								}
 							]
 						}
 					},
