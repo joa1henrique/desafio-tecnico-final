@@ -20,6 +20,7 @@ import {
   submitReimbursement,
   updateReimbursement,
 } from "@/services/reimbursementsService";
+import { getApiErrorMessage } from "@/utils/error";
 import type { CreateReimbursementInput } from "@/types";
 
 const attachmentSchema = z.object({
@@ -201,8 +202,8 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
       );
 
       await navigate({ to: `/reimbursements/${finalReimbursement.id}` });
-    } catch (error) {
-      const message = error instanceof Error ? error.message : "Não foi possível salvar a solicitação.";
+    } catch (err) {
+      const message = getApiErrorMessage(err, "Não foi possível salvar a solicitação.");
       toast.error(message);
     } finally {
       setIsSaving(false);

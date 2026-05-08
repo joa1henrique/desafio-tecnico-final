@@ -26,6 +26,7 @@ import {
 import { StatusBadge } from "@/components/ui/status-badge";
 import { HistoryTimeline } from "@/components/ui/history-timeline";
 import { toast } from "react-toastify";
+import { getApiErrorMessage } from "@/utils/error";
 
 function RejectionDialog({
   open,
@@ -225,7 +226,7 @@ export function ReimbursementDetailPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-destructive">
-                {error.message || "Não foi possível carregar os detalhes. Tente novamente."}
+                {getApiErrorMessage(error, "Não foi possível carregar os detalhes. Tente novamente.")}
               </p>
             </CardContent>
           </Card>

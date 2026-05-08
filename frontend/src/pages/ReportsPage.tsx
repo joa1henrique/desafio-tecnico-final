@@ -8,8 +8,9 @@ import { Button } from "@/components/ui/button";
 import { getFinancialReport, type FinancialReport } from "@/services/reportsService";
 import { listCategories } from "@/services/categoriesService";
 import type { Category } from "@/types";
+import { getApiErrorMessage } from "@/utils/error";
 
-// ── SVG Bar Chart Component (sem dependências externas) ──────────────
+// ── grafico de barras em svg (sem dependências externas) ──────────────
 function BarChart({
   data,
   formatValue,
@@ -267,7 +268,9 @@ export function ReportsPage() {
           <p className="text-sm text-muted-foreground">Carregando relatório...</p>
         )}
         {error && (
-          <p className="text-sm text-destructive">Erro ao carregar relatório.</p>
+          <p className="text-sm text-destructive">
+            {getApiErrorMessage(error, "Erro ao carregar relatório.")}
+          </p>
         )}
 
         {/* cards de resumo */}

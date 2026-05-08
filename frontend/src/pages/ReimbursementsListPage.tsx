@@ -10,6 +10,7 @@ import { listReimbursements } from "@/services/reimbursementsService";
 import { listCategories } from "@/services/categoriesService";
 import type { Reimbursement, Category } from "@/types";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { getApiErrorMessage } from "@/utils/error";
 
 const SearchIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -197,7 +198,7 @@ export function ReimbursementsListPage() {
             </CardHeader>
             <CardContent>
               <p className="text-sm text-destructive">
-                {error.message || "Não foi possível carregar as solicitações. Tente novamente."}
+                {getApiErrorMessage(error, "Não foi possível carregar as solicitações. Tente novamente.")}
               </p>
             </CardContent>
           </Card>
