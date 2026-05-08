@@ -90,6 +90,7 @@ A interface do usuário é uma Single Page Application (SPA) moderna, desenvolvi
 ### Design e Experiência do Usuário
 - **Interface Responsiva**: Desenvolvida com Tailwind CSS, adaptando-se a diferentes tamanhos de tela.
 - **Gerenciamento de Estado e Cache**: Utiliza SWR para consumo eficiente de dados da API, garantindo rapidez e consistência.
+- **Navegação Simplificada**: Utiliza o logotipo no canto superior esquerdo como atalho universal para retornar ao Dashboard principal de qualquer tela do sistema.
 - **Roteamento Tipado**: Implementado com TanStack Router, prevenindo erros de navegação e garantindo proteção de rotas por perfil.
 - **Feedback Constante**: Sistema de notificações (Toasts) e tratamentos de erro em português para garantir que o usuário compreenda cada interação.
 
