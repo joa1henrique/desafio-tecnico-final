@@ -249,7 +249,7 @@ export function ReimbursementDetailPage() {
                 </div>
               </CardHeader>
               <CardContent className="space-y-6">
-                {user?.perfil === "COLABORADOR" && reimbursement.status === "RASCUNHO" && (
+                {user?.perfil === "COLABORADOR" && reimbursement.solicitanteId === user?.id && reimbursement.status === "RASCUNHO" && (
                   <div className="flex flex-wrap justify-end gap-3">
                     <Button variant="destructive" onClick={handleCancel} disabled={isActionLoading}>
                       {isActionLoading ? "Cancelando..." : "Cancelar"}

@@ -161,6 +161,16 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
     ? "Atualize a solicitação e mantenha os anexos organizados."
     : "Preencha os dados da despesa e salve como rascunho ou envie depois.";
 
+  const canSave = useMemo(() => {
+    if (!user) {
+      return false;
+    }
+    if (!isEdit) {
+      return user.perfil === "COLABORADOR";
+    }
+    return reimbursement?.solicitanteId === user.id;
+  }, [isEdit, reimbursement, user]);
+
   useEffect(() => {
     if (!reimbursement) {
       return;
@@ -237,11 +247,37 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
   }
 
   if (categoriesError || reimbursementError) {
+    const message = categoriesError 
+      ? getApiErrorMessage(categoriesError, "Erro ao carregar categorias.")
+      : getApiErrorMessage(reimbursementError, "Erro ao carregar os dados da solicitação.");
+
     return (
       <AppLayout>
         <ErrorCard
           title="Erro ao carregar"
-          message={categoriesError?.message || reimbursementError?.message || "Não foi possível carregar os dados do formulário."}
+          message={message}
+        />
+      </AppLayout>
+    );
+  }
+
+  if (isEdit && reimbursement && reimbursement.solicitanteId !== user?.id && user?.perfil !== "ADMIN") {
+    return (
+      <AppLayout>
+        <ErrorCard
+          title="Acesso negado"
+          message="Você não tem permissão para editar esta solicitação pois não é o proprietário."
+        />
+      </AppLayout>
+    );
+  }
+
+  if (!isEdit && user?.perfil !== "COLABORADOR" && user?.perfil !== "ADMIN") {
+    return (
+      <AppLayout>
+        <ErrorCard
+          title="Acesso negado"
+          message="Apenas colaboradores podem criar novas solicitações de reembolso."
         />
       </AppLayout>
     );
@@ -262,9 +298,9 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
         </div>
 
         {isEdit && reimbursement?.status !== "RASCUNHO" && (
-          <Card className="border-amber-500/30 bg-amber-500/10">
-            <CardContent className="pt-6 text-sm text-amber-900 dark:text-amber-100">
-              Esta solicitação já foi enviada. O backend pode restringir alterações dependendo do status.
+          <Card className="border-destructive/20 bg-destructive/5 dark:bg-destructive/10">
+            <CardContent className="pt-6 text-sm text-destructive font-medium">
+              Esta solicitação já foi enviada e não pode mais ser editada.
             </CardContent>
           </Card>
         )}
@@ -416,14 +452,14 @@ function ReimbursementFormPage({ mode, reimbursementId }: ReimbursementFormPageP
                 <Button
                   type="button"
                   variant="outline"
-                  disabled={isSaving}
+                  disabled={isSaving || !canSave}
                   onClick={handleSubmit((values) => saveReimbursement(values, false))}
                 >
                   {isSaving ? "Salvando..." : "Salvar rascunho"}
                 </Button>
                 <Button
                   type="button"
-                  disabled={isSaving}
+                  disabled={isSaving || !canSave}
                   onClick={handleSubmit((values) => saveReimbursement(values, true))}
                 >
                   {isSaving ? "Salvando..." : "Salvar e enviar"}
