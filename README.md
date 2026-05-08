@@ -62,7 +62,7 @@ O sistema opera baseado em um controle de acesso rigoroso por perfis (RBAC), ond
 - **Colaborador**: É o autor das solicitações. Pode criar novos reembolsos, salvar rascunhos para edição posterior e enviar solicitações para análise. Sua visão é restrita apenas aos próprios reembolsos.
 - **Gestor**: Responsável pela primeira etapa de aprovação. Visualiza a fila de solicitações enviadas e decide pela aprovação ou rejeição (exigindo justificativa em caso de negativa).
 - **Financeiro**: Responsável pela liquidação do pagamento. Visualiza apenas solicitações que já foram aprovadas por um gestor e registra quando o pagamento foi efetivamente realizado.
-- **Administrador**: Possui visão global do sistema. Visualiza a listagem de usuários do sistema, gerencia as categorias de despesa, acompanha o histórico completo de todas as solicitações e tem acesso ao relatório consolidado de movimentações financeiras. Não pode aprovar solicitações nem pagar solicitações de reembolso.
+- **Administrador**: Possui visão global do sistema. Visualiza a listagem de usuários do sistema, gerencia as categorias de despesa, acompanha o histórico completo de todas as solicitações e tem acesso ao relatório financeiro consolidado. Este relatório permite ao administrador analisar os valores aprovados (custos futuros no gráfico "A Pagar") e pagos (custos realizados no gráfico "Pagos"), fornecendo uma visão clara da saúde financeira e previsibilidade de gastos da empresa. Não pode aprovar solicitações nem pagar solicitações de reembolso.
 
 ### Fluxo da Solicitação
 1.  **Rascunho**: A solicitação é criada pelo colaborador e pode ser editada.
