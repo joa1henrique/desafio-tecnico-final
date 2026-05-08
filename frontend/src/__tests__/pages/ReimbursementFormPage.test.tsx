@@ -155,12 +155,13 @@ describe("ReimbursementFormPage (modo create)", () => {
     ).toBeInTheDocument();
   });
 
-  it('exibe mensagem "Somente colaboradores..." para outros perfis', () => {
+  it('exibe "Acesso negado" para outros perfis na criação', () => {
     setupGestor();
     render(<ReimbursementNewPage />);
 
+    expect(screen.getByText("Acesso negado")).toBeInTheDocument();
     expect(
-      screen.getByText("Somente colaboradores podem criar e editar solicitações.")
+      screen.getByText("Apenas colaboradores podem criar novas solicitações de reembolso.")
     ).toBeInTheDocument();
   });
 
